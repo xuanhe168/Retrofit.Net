@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retrofit.Net.Core", "src\Retrofit.Net.Core\Retrofit.Net.Core.csproj", "{7182FB8C-D500-416B-985C-68952E04948D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retrofit.Net.Core.Test", "test\Retrofit.Net.Core.Test\Retrofit.Net.Core.Test.csproj", "{1B2812B7-23DE-4506-9E16-9F50DDF159D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7182FB8C-D500-416B-985C-68952E04948D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7182FB8C-D500-416B-985C-68952E04948D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7182FB8C-D500-416B-985C-68952E04948D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7182FB8C-D500-416B-985C-68952E04948D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2812B7-23DE-4506-9E16-9F50DDF159D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2812B7-23DE-4506-9E16-9F50DDF159D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2812B7-23DE-4506-9E16-9F50DDF159D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2812B7-23DE-4506-9E16-9F50DDF159D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B1DC244-D6B4-4C2C-AE44-05A17941CA0A}
+	EndGlobalSection
+EndGlobal
