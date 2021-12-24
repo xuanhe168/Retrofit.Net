@@ -19,26 +19,26 @@ namespace Retrofit.Net.Tests
 
         public interface IRestInterface
         {
-            [Get("people")]
+            [HttpGet("people")]
             RestResponse<List<Person>> GetPeople();
 
-            [Get("people/{id}")]
-            RestResponse<Person> GetPerson([Path("id")] int id);
+            [HttpGet("people/{id}")]
+            RestResponse<Person> GetPerson([FromPath("id")] int id);
 
-            [Get("people/{id}")]
-            RestResponse<Person> GetPerson([Path("id")] int id, [Query("q")] string query);
+            [HttpGet("people/{id}")]
+            RestResponse<Person> GetPerson([FromPath("id")] int id, [FromQuery("q")] string query);
 
-            [Post("people")]
-            RestResponse<Person> AddPerson([Body] Person person);
+            [HttpPost("people")]
+            RestResponse<Person> AddPerson([FromBody] Person person);
 
-            [Put("people/{id}")]
-            RestResponse<Person> UpdatePerson([Path("id")] int id, [Body] Person person);
+            [HttpPut("people/{id}")]
+            RestResponse<Person> UpdatePerson([FromPath("id")] int id, [FromBody] Person person);
 
             [Head("people/{id}")]
-            RestResponse<Person> HeadPerson([Path("id")] int id);
+            RestResponse<Person> HeadPerson([FromPath("id")] int id);
 
-            [Delete("people/{id}")]
-            RestResponse<Person> DeletePerson([Path("id")] int id);
+            [HttpDelete("people/{id}")]
+            RestResponse<Person> DeletePerson([FromPath("id")] int id);
         }
 
         public class Person

@@ -7,16 +7,16 @@ namespace Retrofit.Net.Tests
 {
     public interface IPeopleService
     {
-        [Get("people")]
+        [HttpGet("people")]
         RestResponse<List<TestRestCallsIntegration.Person>> GetPeople();
 
-        [Get("people/{id}")]
-        RestResponse<TestRestCallsIntegration.Person> GetPerson([Path("id")] int id);
+        [HttpGet("people/{id}")]
+        RestResponse<TestRestCallsIntegration.Person> GetPerson([FromPath("id")] int id);
 
-        [Get("people/{id}")]
-        RestResponse<TestRestCallsIntegration.Person> GetPerson([Path("id")] int id, [Query("limit")] int limit, [Query("test")] string test);
+        [HttpGet("people/{id}")]
+        RestResponse<TestRestCallsIntegration.Person> GetPerson([FromPath("id")] int id, [FromQuery("limit")] int limit, [FromQuery("test")] string test);
 
-        [Post("people")]
-        RestResponse<TestRestCallsIntegration.Person> AddPerson([Body] TestRestCallsIntegration.Person person);
+        [HttpPost("people")]
+        RestResponse<TestRestCallsIntegration.Person> AddPerson([FromBody] TestRestCallsIntegration.Person person);
     }
 }

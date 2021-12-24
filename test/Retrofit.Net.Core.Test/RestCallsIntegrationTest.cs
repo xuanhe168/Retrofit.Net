@@ -41,7 +41,7 @@ namespace Retrofit.Net.Tests
         [SetUp]
         public void SetUp()
         {
-            adapter = new RestAdapter("http://jordanthoms.apiary.io/");
+            //adapter = new RestAdapter("http://jordanthoms.apiary.io/");
             service = adapter.Create<IPeopleService>();
         }
 

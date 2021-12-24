@@ -1,24 +1,10 @@
-﻿using Castle.DynamicProxy;
-using RestSharp;
+﻿/*using Castle.DynamicProxy;
 
 namespace Retrofit.Net.Core
 {
     public class RestAdapter
     {
         private static readonly ProxyGenerator _generator = new ProxyGenerator();
-        private IRestClient restClient;
-
-        public RestAdapter(string baseUrl)
-        {
-            this.restClient = new RestClient(baseUrl);
-        }
-
-        public RestAdapter(IRestClient client)
-        {
-            this.restClient = client;
-        }
-
-
 
         public string Server
         {
@@ -26,7 +12,8 @@ namespace Retrofit.Net.Core
 
         public T Create<T>() where T : class
         {
-            return _generator.CreateInterfaceProxyWithoutTarget<T>(new RestInterceptor(restClient));
+            // 创建代理对象拦截对接口 TInterface 成员的调用
+            return _generator.CreateInterfaceProxyWithoutTarget<T>(new RestInterceptor());
         }
     }
-}
+}*/

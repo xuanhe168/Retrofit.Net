@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿/*using System.Reflection;
 using Retrofit.Net.Core.Attributes;
 using Retrofit.Net.Core.Attributes.Methods;
 using Retrofit.Net.Core.Attributes.Parameters;
@@ -9,7 +9,7 @@ namespace Retrofit.Net.Core
     {
         private readonly MethodInfo methodInfo;
         protected object RequestMethod { get; set; }
-        public RestSharp.Method Method { get; set; }
+        //public RestSharp.Method Method { get; set; }
         public string Path { get; set; }
 
         public List<ParamUsage> ParameterUsage { get; set; }
@@ -49,7 +49,7 @@ namespace Retrofit.Net.Core
                         throw new ArgumentException("Method " + methodInfo.Name + " contains multiple HTTP methods. Found " + RequestMethod  + " and " + methodAttribute.Method);
                     }
 
-                    Method = methodAttribute.Method;
+                   // Method = methodAttribute.Method;
                     Path = attribute.Value;
                 }
 
@@ -69,15 +69,15 @@ namespace Retrofit.Net.Core
                     throw new ArgumentException("No annotation found on parameter " + parameter.Name + " of " + methodInfo.Name);
                 }
                 var type = attribute.GetType();
-                if (type == typeof(PathAttribute))
+                if (type == typeof(FromPathAttribute))
                 {
                     ParameterUsage.Add(ParamUsage.Path);
                     ParameterNames.Add(attribute.Value);
-                } else if (type == typeof (BodyAttribute))
+                } else if (type == typeof (FromBodyAttribute))
                 {
                     ParameterUsage.Add(ParamUsage.Body);
                     ParameterNames.Add(null);
-                } else if (type == typeof(QueryAttribute))
+                } else if (type == typeof(FromQueryAttribute))
                 {
                     ParameterUsage.Add(ParamUsage.Query);
                     ParameterNames.Add(attribute.Value);
@@ -87,3 +87,4 @@ namespace Retrofit.Net.Core
 
     }
 }
+*/
