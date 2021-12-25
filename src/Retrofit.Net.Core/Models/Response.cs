@@ -2,6 +2,7 @@
 {
     public class Response<T>
     {
-        public T Body { get;internal set; }
+        public int StatusCode { get; internal set; }
+        public T? Body { get; internal set; }
     }
 }

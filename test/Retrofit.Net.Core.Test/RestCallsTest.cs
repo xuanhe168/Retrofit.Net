@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Net;
 using FluentAssertions;
 using NSubstitute;
@@ -147,4 +147,4 @@ namespace Retrofit.Net.Tests
             people.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
-}
+}*/

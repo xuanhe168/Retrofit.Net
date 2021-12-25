@@ -11,10 +11,10 @@ namespace Retrofit.Net.Tests
         RestResponse<List<TestRestCallsIntegration.Person>> GetPeople();
 
         [HttpGet("people/{id}")]
-        RestResponse<TestRestCallsIntegration.Person> GetPerson([FromPath("id")] int id);
+        RestResponse<TestRestCallsIntegration.Person> GetPerson(int id);
 
         [HttpGet("people/{id}")]
-        RestResponse<TestRestCallsIntegration.Person> GetPerson([FromPath("id")] int id, [FromQuery("limit")] int limit, [FromQuery("test")] string test);
+        RestResponse<TestRestCallsIntegration.Person> GetPerson(int id, [FromQuery("limit")] int limit, [FromQuery("test")] string test);
 
         [HttpPost("people")]
         RestResponse<TestRestCallsIntegration.Person> AddPerson([FromBody] TestRestCallsIntegration.Person person);

@@ -6,7 +6,7 @@ namespace Retrofit.Net.Core
     {
         static readonly ProxyGenerator _generator = new ProxyGenerator();
 
-        string _BaseUrl { get; set; }
+        public string _BaseUrl { get; private set; }
         RetrofitClient _client { get; set; }
 
         public Retrofit BaseUrl(string url)
@@ -28,7 +28,7 @@ namespace Retrofit.Net.Core
 
         public T Create<T>()where T : class
         {
-            return _generator.CreateInterfaceProxyWithoutTarget<T>(new RestInterceptor());
+            return _generator.CreateInterfaceProxyWithoutTarget<T>(new RestInterceptor(this));
         }
 
         public static Retrofit Builder()

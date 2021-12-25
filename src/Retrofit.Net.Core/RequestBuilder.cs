@@ -1,6 +1,4 @@
-﻿/*using RestSharp;
-
-namespace Retrofit.Net.Core
+﻿namespace Retrofit.Net.Core
 {
     class RequestBuilder
     {
@@ -13,7 +11,7 @@ namespace Retrofit.Net.Core
             this.arguments = arguments;
         }
 
-        public IRestRequest Build()
+        public HttpExecutor Build()
         {
             var request =  new RestRequest(methodInfo.Path, methodInfo.Method);
             request.RequestFormat = DataFormat.Json; // TODO: Allow XML requests?
@@ -42,4 +40,3 @@ namespace Retrofit.Net.Core
         }
     }
 }
-*/

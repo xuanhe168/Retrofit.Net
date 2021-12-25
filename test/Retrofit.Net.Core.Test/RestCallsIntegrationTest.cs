@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using Retrofit.Net.Core;
@@ -79,4 +79,4 @@ namespace Retrofit.Net.Tests
             personResponse.Data.Should().Be(person);
         }
     }
-}
+}*/

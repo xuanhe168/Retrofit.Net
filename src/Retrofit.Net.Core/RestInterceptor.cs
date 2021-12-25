@@ -1,34 +1,59 @@
 ﻿using System.Reflection;
 using Castle.DynamicProxy;
+using Newtonsoft.Json;
 
 namespace Retrofit.Net.Core
 {
     public class RestInterceptor : IInterceptor
     {
+        readonly Core.Retrofit _retrofit;
+        public RestInterceptor(Core.Retrofit retrofit)
+        {
+            _retrofit = retrofit;
+        }
+
         public void Intercept(IInvocation invocation)
         {
-            // 1. 读取请求地址然后和域名拼接得到请求路径
+            MethodInfo method = invocation.Method;
+            var attribute = method.GetCustomAttributes(true)
+                .FirstOrDefault(x => x.GetType() == typeof(Attributes.Methods.HttpGetAttribute)) as Attributes.Methods.HttpGetAttribute;
+            if (attribute != null)
+            {
+                string path = attribute.Path;
+                string url = $"{_retrofit._BaseUrl}{path}";
 
-            // 2. 获取请求类型 GET、POST、PUT、DELETE
+                Type returnType = invocation.Method.ReturnType;
+                if (returnType != null && typeof(Task).IsAssignableFrom(returnType))
+                {
+                    Type[] returnTypes = returnType.GenericTypeArguments;
+                    if (returnType.FullName == "System.Void") return;
+                    Type? response_type = returnTypes[0];
 
-            // 3. 获取参数信息包括参数类型的判断
+                    // Body
+                    object? body_entity = Activator.CreateInstance(response_type);
+                    Type response_generic_type = response_type.GenericTypeArguments[0];
+                    var json = "{\"id\" : 1,\"name\":\"Onlly\"}";
+                    object? bodyValue = JsonConvert.DeserializeObject(json, response_generic_type);
 
-            // 4. 发起请求
+                    // Response
+                    object? v = Convert.ChangeType(bodyValue, response_type!.GetProperty("Body")!.PropertyType);
+                    response_type.GetProperty("Body")!.SetValue(body_entity, v, null);
+                    invocation.ReturnValue = Task.FromResult(body_entity! as dynamic);
+                }
+                else
+                {
+                    // Body
+                    object? body_entity = Activator.CreateInstance(returnType!);
+                    Type response_generic_type = returnType!.GenericTypeArguments[0];
+                    var json = "{\"id\" : 1,\"name\":\"Onlly\"}";
+                    object? bodyValue = JsonConvert.DeserializeObject(json, response_generic_type);
 
-
-            // Build Request
-            /*var methodInfo = new RestMethodInfo(invocation.Method); // TODO: Memoize these objects in a hash for performance
-            var request = new RequestBuilder(methodInfo, invocation.Arguments).Build();
-
-            // Execute request
-            var responseType = invocation.Method.ReturnType;
-            var genericTypeArgument = responseType.GenericTypeArguments[0];
-            // We have to find the method manually due to limitations of GetMethod()
-            *//*var methods = restClient.GetType().GetMethods();
-            MethodInfo method = methods.Where(m => m.Name == "Execute").First(m => m.IsGenericMethod);
-            MethodInfo generic = method.MakeGenericMethod(genericTypeArgument);
-            invocation.ReturnValue =  generic.Invoke(restClient, new object[] { request });*//**/
-
+                    // Response
+                    object? v = Convert.ChangeType(bodyValue, returnType!.GetProperty("Body")!.PropertyType);
+                    returnType!.GetProperty("Body")!.SetValue(body_entity, v, null);
+                    invocation.ReturnValue = body_entity;
+                }
+            }
         }
     }
 }

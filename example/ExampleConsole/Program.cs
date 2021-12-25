@@ -36,9 +36,9 @@ builder.Authenticator();
 builder.AddInterceptor();
 var client = builder.Build();
 var retrofit = Retrofit.Net.Core.Retrofit.Builder()
-    .BaseUrl("http://jordanthoms.apiary.io/")
+    .BaseUrl("https://api.onlly.online")
     .Client(client)
     .Build();
 var service = retrofit.Create<IPeopleService>();
-var response = service.GetPerson(1);
-Console.WriteLine(response);
+Response<Person> response = service.GetPerson(1);
+Console.WriteLine($"Response: {response.Body}");
