@@ -1,8 +1,8 @@
 ﻿namespace Retrofit.Net.Core.Attributes.Parameters
 {
-    public class FromBodyAttribute : BaseAttribute
+    public class FromBodyAttribute : BaseParamAttribute
     {
-        public FromBodyAttribute():base("")
+        public FromBodyAttribute():base(null)
         {
         }
 

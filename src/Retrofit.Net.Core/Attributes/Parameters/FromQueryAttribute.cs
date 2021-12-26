@@ -1,10 +1,10 @@
 ﻿namespace Retrofit.Net.Core.Attributes.Parameters
 {
-    public class FromQueryAttribute : BaseAttribute
+    public class FromQueryAttribute : BaseParamAttribute
     {
-        public FromQueryAttribute() : base("") { }
+        public FromQueryAttribute() : base(null) { }
 
-        public FromQueryAttribute(string name) : base(name)
+        public FromQueryAttribute(string? name) : base(name)
         {
         }
     }

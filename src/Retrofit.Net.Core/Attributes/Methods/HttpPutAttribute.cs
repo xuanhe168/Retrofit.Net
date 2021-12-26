@@ -1,7 +1,7 @@
 ﻿
 namespace Retrofit.Net.Core.Attributes.Methods
 {
-    public class HttpPutAttribute : BaseAttribute
+    public class HttpPutAttribute : BaseMethodAttribute
     {
         public HttpPutAttribute(string path)
         {

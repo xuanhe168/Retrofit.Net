@@ -1,7 +1,7 @@
 ﻿
 namespace Retrofit.Net.Core.Attributes.Methods
 {
-    public class HttpPostAttribute : BaseAttribute
+    public class HttpPostAttribute : BaseMethodAttribute
     {
         public HttpPostAttribute(string path)
         {

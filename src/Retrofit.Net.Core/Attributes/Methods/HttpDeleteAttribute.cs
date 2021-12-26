@@ -1,6 +1,6 @@
 ﻿namespace Retrofit.Net.Core.Attributes.Methods
 {
-    public class HttpDeleteAttribute : BaseAttribute
+    public class HttpDeleteAttribute : BaseMethodAttribute
     {
         public HttpDeleteAttribute(string path)
         {

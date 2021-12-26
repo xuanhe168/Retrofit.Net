@@ -1,9 +1,9 @@
 ﻿namespace Retrofit.Net.Core.Attributes.Parameters
 {
-    public class FromFormAttribute : BaseAttribute
+    public class FromFormAttribute : BaseParamAttribute
     {
-        public FromFormAttribute() : base("") { }
-        public FromFormAttribute(string name) : base(name)
+        public FromFormAttribute() : base(null) { }
+        public FromFormAttribute(string? name) : base(name)
         {
         }
     }
