@@ -8,7 +8,7 @@ namespace ExampleConsole
     public interface IPersonService
     {
         [HttpPost("/api/Auth/GetJwtToken")]
-        Response<TokenModel> GetJwtToken([FromForm] AuthModel auth);
+        Task<Response<TokenModel>> GetJwtToken([FromForm] AuthModel auth);
 
         [HttpGet("/api/Person")]
         Task<Response<IList<Person>>> Get();

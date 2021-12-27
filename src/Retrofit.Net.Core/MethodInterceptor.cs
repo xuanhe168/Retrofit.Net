@@ -43,6 +43,9 @@ namespace Retrofit.Net.Core
 
                 // 设置Response的Body属性值
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
+                response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
+                response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
+                response_type.GetProperty("Headers")!.SetValue(body_entity, response.Headers, null);
 
                 return Task.FromResult(body_entity! as dynamic);
             }
@@ -53,7 +56,10 @@ namespace Retrofit.Net.Core
                 object? bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
 
                 object? v = Convert.ChangeType(bodyValue, returnType!.GetProperty("Body")!.PropertyType);
-                returnType!.GetProperty("Body")!.SetValue(body_entity, v, null);
+                returnType?.GetProperty("Body")!.SetValue(body_entity, v, null);
+                returnType?.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
+                returnType?.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
+                returnType?.GetProperty("Headers")!.SetValue(body_entity, response.Headers, null);
                 return body_entity!;
             }
         }

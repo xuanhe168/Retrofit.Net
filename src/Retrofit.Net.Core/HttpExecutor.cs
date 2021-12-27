@@ -1,14 +1,16 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Retrofit.Net.Core.Builder;
 using Retrofit.Net.Core.Extensions;
 using Retrofit.Net.Core.Models;
 using Retrofit.Net.Core.Params;
+using System.Net.Http.Headers;
 
 namespace Retrofit.Net.Core
 {
     public class HttpExecutor
     {
         MethodBuilder _method;
-        HttpClient _client = new HttpClient();
         public HttpExecutor(MethodBuilder method)
         {
             _method = method;
@@ -17,177 +19,119 @@ namespace Retrofit.Net.Core
         public Response<dynamic> Execute()
         {
             Response<dynamic> response = new Response<dynamic>();
-            if(_method.Method == Method.GET)
+            HttpClient _client = new HttpClient();
+            Task<HttpResponseMessage>? _responseTask = null;
+            string _requestUrl = _method.Path!;
+            if (_method.Method == Method.GET)
             {
-                string url = _method.Path!;
-                if(url.Contains("{")) url = url![0..url.LastIndexOf("{")];
-                for(int i = 0;i < _method.Parameters!.Count;i++)
+                _requestUrl = GetParams(_requestUrl,_method.Parameters);
+                _responseTask = _client.GetAsync(_requestUrl);
+            } else if (_method.Method == Method.POST)
+            {
+                HttpContent? content = GetParams(_method.Parameters);
+                _responseTask = _client.PostAsync(_requestUrl, content);
+            } else if (_method.Method == Method.PUT)
+            {
+                _requestUrl = GetParams(_requestUrl, _method.Parameters);
+                HttpContent? content = GetParams(_method.Parameters);
+                _responseTask = _client.PutAsync(_requestUrl, content);
+            } else if (_method.Method == Method.DELETE)
+            {
+                _requestUrl = GetParams(_requestUrl,_method.Parameters);
+                _responseTask = _client.DeleteAsync(_requestUrl);
+            }
+            _responseTask?.Wait();
+            HttpResponseMessage httpResp = _responseTask!.Result;
+            string json = JsonConvert.SerializeObject(httpResp.Headers);
+            response.Message = httpResp.ReasonPhrase;
+            response.StatusCode = Convert.ToInt32(httpResp.StatusCode);
+            response.Body = httpResp.Content.ReadAsStringAsync().Result;
+            response.Headers = JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, object>>>(json);
+            return response;
+        }
+
+        string GetParams(string baseUrl,IList<Param>? _params)
+        {
+            if (baseUrl.Contains("{"))baseUrl = baseUrl[0..baseUrl.LastIndexOf("{")];
+            for (int i = 0; i < _params?.Count; i++)
+            {
+                var param = _params[i];
+                if(param.Kind == ParamKind.Query)
                 {
-                    var param = _method.Parameters[i];
-                    if(param.Kind == ParamKind.Query)
+                    if(baseUrl.Contains('?') is false)baseUrl += "?";
+                    baseUrl += $"{param.Name}={param.Value}";
+                    if(i < (_params!.Count - 1))baseUrl += "&";
+                }
+                else if(param.Kind == ParamKind.Path)baseUrl += param.Value;
+            }
+            return baseUrl;
+        }
+
+        HttpContent? GetParams(IList<Param>? _params)
+        {
+            HttpContent? response = null;
+            if (_params is null || (_params?.Any() ?? false) is false)return null;
+            IList<Param> collection = _params.Where(param => param.Kind != ParamKind.Path && param.Kind != ParamKind.Query).ToList();
+            if(collection.Count < 1)return null;
+            Param first = collection.First();
+            Type valueType = first.GetType();
+            IList<KeyValuePair<string, dynamic>>? fields = null;
+            if(valueType.IsClass)fields = ConvertExtensions.GetProperties(first.Value);
+            if(first.Kind == ParamKind.Body)
+            {
+                JObject obj = new JObject();
+                if(fields is not null)
+                {
+                    foreach (var item in fields)
                     {
-                        if (url.Contains('?') is false)url += "?";
-                        url += $"{param.Name}={param.Value}";
-                        if (i < (_method.Parameters!.Count - 1)) url += "&";
-                    }
-                    else if(param.Kind == ParamKind.Path)
-                    {
-                        url += param.Value;
+                        obj.Add(item.Key, item.Value);
                     }
                 }
-                Task<HttpResponseMessage> respTask = _client.GetAsync(url);
-                respTask.Wait();
-                HttpResponseMessage httpResp = respTask.Result;
-                response.StatusCode = Convert.ToInt32(httpResp.StatusCode);
-                response.Body = httpResp.Content.ReadAsStringAsync().Result;
-            }else if(_method.Method == Method.POST)
-            {
-                string url = _method.Path!;
-                IList<Param>? parameters = _method.Parameters;
-                if(parameters?.Count > 2)throw new ArgumentOutOfRangeException("The maximum number of parameters out of range is 2.If there are multiple parameters, please encapsulate them into the class");
-                if(parameters?.Count > 1 && parameters!.Any(x => x.Kind == ParamKind.Path)is false)throw new ArgumentException("If there are two parameters, the first parameter must be [FormPath]");
-                List<KeyValuePair<string, string>> bodyContent = new List<KeyValuePair<string, string>>();
-                HttpContent content = new FormUrlEncodedContent(bodyContent);
-                if(parameters is not null && parameters!.Any())
+                else
                 {
-                    Param? param = parameters[0];
-                    if(param.Kind == ParamKind.Path)
+                    obj.Add(first.Name, first.Value);
+                }
+                if(collection.Count > 1)
+                {
+                    foreach(var item in collection.Skip(1))
                     {
-                        if (url.Contains('{')) url = url![0..url.LastIndexOf("{")];
-                        url += $"{parameters[0].Value}";
-                        if(parameters.Count > 1)
-                        {
-                            param = parameters[1];
-                            dynamic? argument = param.Value;
-                            if(argument is not null)
-                            {
-                                Type type = argument.GetType();
-                                if(type.IsClass)
-                                {
-                                    IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
-                                    if(param.Kind == ParamKind.Form)
-                                    {
-                                        content = new MultipartFormDataContent();
-                                        foreach(var item in fields)
-                                        {
-                                            MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
-                                            if(item.Value.GetType() != typeof(FieldFile))
-                                            {
-                                                multipartFormDataContent.Add(new StringContent(item.Value),item.Key);
-                                            }
-                                            else
-                                            {
-                                                FieldFile? file = (item.Value as FieldFile);
-                                                string? path = file?.FilePath;
-                                                multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
-                                                    item.Key,file?.FilePath ?? "");
-                                            }
-                                        }
-                                    }else if (param.Kind == ParamKind.Body)
-                                    {
-                                        foreach (var item in fields)
-                                        {
-                                            bodyContent.Add(new KeyValuePair<string, string>(item.Key,item.Value.ToString()));
-                                        }
-                                    }
-                                }
-                                else // isn't class
-                                {
-                                    if (param.Kind == ParamKind.Form)
-                                    {
-                                        content = new MultipartFormDataContent();
-                                        MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
-                                        if(param.Value?.GetType() != typeof(FieldFile))
-                                        {
-                                            multipartFormDataContent.Add(new StringContent(param.Value),param.Name);
-                                        }
-                                        else
-                                        {
-                                            FieldFile? file = (param.Value as FieldFile);
-                                            string? path = file?.FilePath;
-                                            multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
-                                                param.Name, file?.FileName ?? "");
-                                        }
-                                    }else if(param.Kind == ParamKind.Body)
-                                    {
-                                        bodyContent.Add(new KeyValuePair<string, string>(param.Name,param.Value?.ToString()));
-                                    }
-                                }
-                            }
-                        }
+                        obj.Add(item.Name, item.Value);
                     }
-                    else // first argument is not [FromPath]
+                }
+                response = new StringContent(obj.ToString());
+                response.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            }
+            else if(first.Kind == ParamKind.Form)
+            {
+                MultipartFormDataContent content = new MultipartFormDataContent();
+                if(fields is not null)
+                {
+                    foreach (var item in fields)
                     {
-                        if(parameters.Count > 1)throw new ArgumentOutOfRangeException("If annotation no [FromPath] cannot be more than 1");
-                        dynamic? argument = param.Value;
-                        if(argument is not null)
+                        if(item.Value?.GetType() != typeof(FieldFile))
                         {
-                            Type type = argument.GetType();
-                            if(type.IsClass)
-                            {
-                                IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
-                                if(param.Kind == ParamKind.Form)
-                                {
-                                    content = new MultipartFormDataContent();
-                                    foreach(var item in fields)
-                                    {
-                                        MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
-                                        if(item.Value.GetType() != typeof(FieldFile))
-                                        {
-                                            multipartFormDataContent.Add(new StringContent(item.Value),item.Key);
-                                        }
-                                        else
-                                        {
-                                            FieldFile? file = (item.Value as FieldFile);
-                                            string? path = file?.FilePath;
-                                            multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
-                                                item.Key,file?.FilePath ?? "");
-                                        }
-                                    }
-                                }else if (param.Kind == ParamKind.Body)
-                                {
-                                    foreach (var item in fields)
-                                    {
-                                        bodyContent.Add(new KeyValuePair<string, string>(item.Key,item.Value.ToString()));
-                                    }
-                                }
-                            }
-                            else // isn't class
-                            {
-                                if (param.Kind == ParamKind.Form)
-                                {
-                                    content = new MultipartFormDataContent();
-                                    MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
-                                    if(param.Value?.GetType() != typeof(FieldFile))
-                                    {
-                                        multipartFormDataContent.Add(new StringContent(param.Value),param.Name);
-                                    }
-                                    else
-                                    {
-                                        FieldFile? file = (param.Value as FieldFile);
-                                        string? path = file?.FilePath;
-                                        multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
-                                            param.Name, file?.FileName ?? "");
-                                    }
-                                }else if(param.Kind == ParamKind.Body)
-                                {
-                                    bodyContent.Add(new KeyValuePair<string, string>(param.Name,param.Value?.ToString()));
-                                }
-                            }
+                            content.Add(new StringContent(item.Value),item.Key);
+                        }
+                        else
+                        {
+                            FieldFile? file = (item.Value as FieldFile);
+                            string? path = file?.FilePath;
+                            content.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),item.Key, file?.FileName ?? "");
                         }
                     }
                 }
-                Task<HttpResponseMessage> respTask = _client.PostAsync(_method.Path,content);
-                respTask.Wait();
-                HttpResponseMessage httpResp = respTask.Result;
-                response.StatusCode = Convert.ToInt32(httpResp.StatusCode);
-                response.Body = httpResp.Content.ReadAsStringAsync().Result;
-            }else if (_method.Method == Method.PUT)
-            {
-                
-            }else if (_method.Method == Method.DELETE)
-            {
-                
+                else
+                {
+                    content.Add(new StringContent(first.Name,first.Value));
+                }
+                if(collection.Count > 1)
+                {
+                    foreach(var item in collection.Skip(1))
+                    {
+                        content.Add(new StringContent(item.Name, item.Value));
+                    }
+                }
+                response = content;
             }
             return response;
         }
