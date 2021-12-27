@@ -1,4 +1,5 @@
 using Retrofit.Net.Core.Builder;
+using Retrofit.Net.Core.Extensions;
 using Retrofit.Net.Core.Models;
 using Retrofit.Net.Core.Params;
 
@@ -46,63 +47,66 @@ namespace Retrofit.Net.Core
                 if(parameters?.Count > 2)throw new ArgumentOutOfRangeException("The maximum number of parameters out of range is 2.If there are multiple parameters, please encapsulate them into the class");
                 if(parameters?.Count > 1 && parameters!.Any(x => x.Kind == ParamKind.Path)is false)throw new ArgumentException("If there are two parameters, the first parameter must be [FormPath]");
                 
-                List<KeyValuePair<string, string>> kvpsList = new List<KeyValuePair<string, string>>();
-                HttpContent content = new FormUrlEncodedContent(kvpsList);
+                List<KeyValuePair<string, string>> bodyContent = new List<KeyValuePair<string, string>>();
+                HttpContent content = new FormUrlEncodedContent(bodyContent);
                 if(parameters is not null && parameters!.Any())
                 {
-                    Param? firstParam = parameters[0];
-                    if(firstParam.Kind == ParamKind.Path)
+                    Param? param = parameters[0];
+                    if(param.Kind == ParamKind.Path)
                     {
                         if (url.Contains('{')) url = url![0..url.LastIndexOf("{")];
                         url += $"{parameters[0].Value}";
+                        if(parameters.Count > 1)
+                        {
+                            param = null;
+                            param = parameters[1];
+                            string name = param.Name;
+                            dynamic? argument = param.Value;
+                            if(argument is not null)
+                            {
+                                Type type = argument.GetType();
+                                if(type.IsClass)
+                                {
+                                    IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
+                                    if(param.Kind == ParamKind.Form)
+                                    {
+                                        
+                                    }else if (param.Kind == ParamKind.Body)
+                                    {
+                                        foreach (var item in fields)
+                                        {
+                                            bodyContent.Add(new KeyValuePair<string, string>(item.Key,item.Value.ToString()));
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        // Body,Form
-                        string name = firstParam.Name;
-                        dynamic? argument = firstParam.Value;
-                        if (argument is not null)
-                        {
-                            Type type = Type.GetType(argument);
-                            if (type.IsClass)
-                            {
-
-                            }
-                            else
-                            {
-                                // Form,Body
-                            }
-                        }
-                        if (firstParam.Kind is ParamKind.Form)
-                        {
-
-                        }else if(firstParam.Kind is ParamKind.Body)
-                        {
-
-                        }
-                    }
-
-                    if(parameters.Count > 1)
-                    {
-                        Param param = parameters[1];
+                        if(parameters.Count > 1)throw new ArgumentOutOfRangeException("");
                         string name = param.Name;
                         dynamic? argument = param.Value;
-                        if (argument is not null)
+                        if(argument is not null)
                         {
-                            Type type = Type.GetType(argument);
+                            Type type = argument.GetType();
                             if(type.IsClass)
                             {
-
-                            }
-                            else
-                            {
-                                // Form,Body
+                                IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
+                                if(param.Kind == ParamKind.Form)
+                                {
+                                    
+                                }else if (param.Kind == ParamKind.Body)
+                                {
+                                    foreach (var item in fields)
+                                    {
+                                        bodyContent.Add(new KeyValuePair<string, string>(item.Key,item.Value.ToString()));
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                // Body
-                if(_method.Parameters is not null && _method.Parameters.Count > 0)kvpsList.AddRange(_method.Parameters!.Select(x => new KeyValuePair<string, string>(x.Name, x.Value)).ToList());
                 Task<HttpResponseMessage> respTask = _client.PostAsync(_method.Path,content);
                 respTask.Wait();
             }

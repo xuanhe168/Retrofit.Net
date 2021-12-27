@@ -32,5 +32,10 @@ namespace Retrofit.Net.Core.Extensions
 			}
 			return rtn;
 		}
+
+		public static IList<KeyValuePair<string, dynamic?>> GetProperties1<T>(T obj)
+		{
+			return obj.GetProperties();
+		}
 	}
 }

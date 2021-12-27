@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Retrofit.Net.Core;
 using Retrofit.Net.Core.Extensions;
 using Retrofit.Net.Core.Models;
+using static System.Console;
 
 // var builder = RetrofitClient.Builder();
 // builder.authenticator(authenticator);
@@ -44,18 +45,18 @@ var retrofit = Retrofit.Net.Core.Retrofit.Builder()
     .Build();
 var service = retrofit.Create<IPersonService>();
 
-Console.WriteLine("测试GET请求:");
+/*WriteLine("测试GET请求:");
 Response<IList<Person>> response = await service.Get();
-Console.WriteLine();
+WriteLine();
 foreach(var item in response.Body!)
 {
-    Console.WriteLine(JsonConvert.SerializeObject(item));
+    WriteLine(JsonConvert.SerializeObject(item));
 }
 
-Console.WriteLine("\n\n测试GET请求带参数:");
+WriteLine("\n\n测试GET请求带参数:");
 Response<Person> response1 = await service.Get(id:1);
-Console.WriteLine(JsonConvert.SerializeObject(response1));
+WriteLine(JsonConvert.SerializeObject(response1));*/
 
-Console.WriteLine("\n\n测试POST请求:");
+WriteLine("\n\n测试POST请求:");
 Response<Person> response2 = await service.Add(new Person { Id = 1,Name = "老中医",Age = 18});
-Console.WriteLine(JsonConvert.SerializeObject(response2));
+WriteLine(JsonConvert.SerializeObject(response2));
