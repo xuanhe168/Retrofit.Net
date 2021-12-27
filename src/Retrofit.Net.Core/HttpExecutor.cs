@@ -70,7 +70,7 @@ namespace Retrofit.Net.Core
                                     IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
                                     if(param.Kind == ParamKind.Form)
                                     {
-                                        
+                                        // TODO Form Processing:
                                     }else if (param.Kind == ParamKind.Body)
                                     {
                                         foreach (var item in fields)
@@ -95,6 +95,7 @@ namespace Retrofit.Net.Core
                                 IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
                                 if(param.Kind == ParamKind.Form)
                                 {
+                                    // TODO Form Processing:
                                     
                                 }else if (param.Kind == ParamKind.Body)
                                 {
