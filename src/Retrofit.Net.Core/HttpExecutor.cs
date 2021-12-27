@@ -46,7 +46,6 @@ namespace Retrofit.Net.Core
                 IList<Param>? parameters = _method.Parameters;
                 if(parameters?.Count > 2)throw new ArgumentOutOfRangeException("The maximum number of parameters out of range is 2.If there are multiple parameters, please encapsulate them into the class");
                 if(parameters?.Count > 1 && parameters!.Any(x => x.Kind == ParamKind.Path)is false)throw new ArgumentException("If there are two parameters, the first parameter must be [FormPath]");
-                
                 List<KeyValuePair<string, string>> bodyContent = new List<KeyValuePair<string, string>>();
                 HttpContent content = new FormUrlEncodedContent(bodyContent);
                 if(parameters is not null && parameters!.Any())
@@ -58,9 +57,7 @@ namespace Retrofit.Net.Core
                         url += $"{parameters[0].Value}";
                         if(parameters.Count > 1)
                         {
-                            param = null;
                             param = parameters[1];
-                            string name = param.Name;
                             dynamic? argument = param.Value;
                             if(argument is not null)
                             {
@@ -70,7 +67,22 @@ namespace Retrofit.Net.Core
                                     IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
                                     if(param.Kind == ParamKind.Form)
                                     {
-                                        // TODO Form Processing:
+                                        content = new MultipartFormDataContent();
+                                        foreach(var item in fields)
+                                        {
+                                            MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
+                                            if(item.Value.GetType() != typeof(FieldFile))
+                                            {
+                                                multipartFormDataContent.Add(new StringContent(item.Value),item.Key);
+                                            }
+                                            else
+                                            {
+                                                FieldFile? file = (item.Value as FieldFile);
+                                                string? path = file?.FilePath;
+                                                multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
+                                                    item.Key,file?.FilePath ?? "");
+                                            }
+                                        }
                                     }else if (param.Kind == ParamKind.Body)
                                     {
                                         foreach (var item in fields)
@@ -79,13 +91,34 @@ namespace Retrofit.Net.Core
                                         }
                                     }
                                 }
+                                else // isn't class
+                                {
+                                    if (param.Kind == ParamKind.Form)
+                                    {
+                                        content = new MultipartFormDataContent();
+                                        MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
+                                        if(param.Value?.GetType() != typeof(FieldFile))
+                                        {
+                                            multipartFormDataContent.Add(new StringContent(param.Value),param.Name);
+                                        }
+                                        else
+                                        {
+                                            FieldFile? file = (param.Value as FieldFile);
+                                            string? path = file?.FilePath;
+                                            multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
+                                                param.Name, file?.FileName ?? "");
+                                        }
+                                    }else if(param.Kind == ParamKind.Body)
+                                    {
+                                        bodyContent.Add(new KeyValuePair<string, string>(param.Name,param.Value?.ToString()));
+                                    }
+                                }
                             }
                         }
                     }
-                    else
+                    else // first argument is not [FromPath]
                     {
-                        if(parameters.Count > 1)throw new ArgumentOutOfRangeException("");
-                        string name = param.Name;
+                        if(parameters.Count > 1)throw new ArgumentOutOfRangeException("If annotation no [FromPath] cannot be more than 1");
                         dynamic? argument = param.Value;
                         if(argument is not null)
                         {
@@ -95,8 +128,22 @@ namespace Retrofit.Net.Core
                                 IList<KeyValuePair<string,dynamic>> fields = ConvertExtensions.GetProperties1(argument);
                                 if(param.Kind == ParamKind.Form)
                                 {
-                                    // TODO Form Processing:
-                                    
+                                    content = new MultipartFormDataContent();
+                                    foreach(var item in fields)
+                                    {
+                                        MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
+                                        if(item.Value.GetType() != typeof(FieldFile))
+                                        {
+                                            multipartFormDataContent.Add(new StringContent(item.Value),item.Key);
+                                        }
+                                        else
+                                        {
+                                            FieldFile? file = (item.Value as FieldFile);
+                                            string? path = file?.FilePath;
+                                            multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
+                                                item.Key,file?.FilePath ?? "");
+                                        }
+                                    }
                                 }else if (param.Kind == ParamKind.Body)
                                 {
                                     foreach (var item in fields)
@@ -105,11 +152,42 @@ namespace Retrofit.Net.Core
                                     }
                                 }
                             }
+                            else // isn't class
+                            {
+                                if (param.Kind == ParamKind.Form)
+                                {
+                                    content = new MultipartFormDataContent();
+                                    MultipartFormDataContent multipartFormDataContent = (MultipartFormDataContent)content;
+                                    if(param.Value?.GetType() != typeof(FieldFile))
+                                    {
+                                        multipartFormDataContent.Add(new StringContent(param.Value),param.Name);
+                                    }
+                                    else
+                                    {
+                                        FieldFile? file = (param.Value as FieldFile);
+                                        string? path = file?.FilePath;
+                                        multipartFormDataContent.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),
+                                            param.Name, file?.FileName ?? "");
+                                    }
+                                }else if(param.Kind == ParamKind.Body)
+                                {
+                                    bodyContent.Add(new KeyValuePair<string, string>(param.Name,param.Value?.ToString()));
+                                }
+                            }
                         }
                     }
                 }
                 Task<HttpResponseMessage> respTask = _client.PostAsync(_method.Path,content);
                 respTask.Wait();
+                HttpResponseMessage httpResp = respTask.Result;
+                response.StatusCode = Convert.ToInt32(httpResp.StatusCode);
+                response.Body = httpResp.Content.ReadAsStringAsync().Result;
+            }else if (_method.Method == Method.PUT)
+            {
+                
+            }else if (_method.Method == Method.DELETE)
+            {
+                
             }
             return response;
         }
