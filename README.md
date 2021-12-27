@@ -725,5 +725,5 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 Buy a cup of coffee for me (Scan by wechat)：
 
-![PAY](./Images/pay.jpg =100x100)
-![Contact](./Images/me.jpg =100x100)
+![PAY-w100](./Images/pay.jpg)
+![Contact-w100](./Images/me.jpg)
