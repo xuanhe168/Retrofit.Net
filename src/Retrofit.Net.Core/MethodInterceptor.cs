@@ -32,16 +32,11 @@ namespace Retrofit.Net.Core
             if (returnType != null && typeof(Task).IsAssignableFrom(returnType))
             {
                 Type[] returnTypes = returnType.GenericTypeArguments;
-                // Task<>里面的泛型类型
                 Type? response_type = returnTypes[0];
-
-                // 动态创建泛型实体
                 object? body_entity = Activator.CreateInstance(response_type);
-                // 获取Task泛型内的泛型
                 Type response_generic_type = response_type.GenericTypeArguments[0];
                 object? bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
 
-                // 设置Response的Body属性值
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
@@ -55,11 +50,10 @@ namespace Retrofit.Net.Core
                 Type response_generic_type = returnType!.GenericTypeArguments[0];
                 object? bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
 
-                object? v = Convert.ChangeType(bodyValue, returnType!.GetProperty("Body")!.PropertyType);
-                returnType?.GetProperty("Body")!.SetValue(body_entity, v, null);
-                returnType?.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
-                returnType?.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
-                returnType?.GetProperty("Headers")!.SetValue(body_entity, response.Headers, null);
+                returnType.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
+                returnType.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
+                returnType.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
+                returnType.GetProperty("Headers")!.SetValue(body_entity, response.Headers, null);
                 return body_entity!;
             }
         }
