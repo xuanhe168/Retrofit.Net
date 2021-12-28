@@ -21,7 +21,7 @@ namespace Retrofit.Net.Core
                 .AddArguments(invocation.Arguments)
                 .AddReturnType(invocation.Method.ReturnType)
                 .Build();
-            HttpExecutor executor = new HttpExecutor(methodBuilder);
+            HttpExecutor executor = new HttpExecutor(methodBuilder,_retrofit.Client);
             invocation.ReturnValue = ConvertReturnValue(
                 returnType:invocation.Method.ReturnType,
                 response:executor.Execute());
@@ -35,8 +35,13 @@ namespace Retrofit.Net.Core
                 Type? response_type = returnTypes[0];
                 object? body_entity = Activator.CreateInstance(response_type);
                 Type response_generic_type = response_type.GenericTypeArguments[0];
-                object? bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
-
+                object? bodyValue;
+                try
+                {
+                    bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
+                }
+                catch (Exception ex) { }
+                finally { bodyValue = response.Body; }
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
@@ -48,7 +53,12 @@ namespace Retrofit.Net.Core
             {
                 object? body_entity = Activator.CreateInstance(returnType!);
                 Type response_generic_type = returnType!.GenericTypeArguments[0];
-                object? bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
+                object? bodyValue;
+                try
+                {
+                    bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
+                }catch (Exception ex) { }
+                finally { bodyValue = response.Body; }
 
                 returnType.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 returnType.GetProperty("Message")!.SetValue(body_entity, response.Message, null);

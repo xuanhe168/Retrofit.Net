@@ -1,16 +1,22 @@
 ﻿using ExampleConsole;
 using Newtonsoft.Json;
 using Retrofit.Net.Core;
+using Retrofit.Net.Core.Converts;
 using Retrofit.Net.Core.Models;
 
-var builder = RetrofitClient.Builder();
-builder.AddInterceptor(new HeaderInterceptor());
-var client = builder.Build();
-var retrofit = Retrofit.Net.Core.Retrofit.Builder()
-    .SetBaseUrl("https://localhost:7177")
-    .SetClient(client)
+var client = new RetrofitClient.Builder()
+    .AddInterceptor(new HeaderInterceptor())
+    .Build();
+var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
+    .AddBaseUrl("https://localhost:7177")
+    .AddClient(client)
+    .AddConverterFactory(GsonConverterFactory.Create())
     .Build();
 var service = retrofit.Create<IPersonService>();
+
+Console.WriteLine("拉取百度首页:");
+Response<dynamic> response5 = service.GetBaiduHome();
+Console.WriteLine(JsonConvert.SerializeObject(response5));
 
 // 异步请求
 /*Console.WriteLine("登录:");
@@ -61,7 +67,3 @@ Console.WriteLine(JsonConvert.SerializeObject(response3));
 Console.WriteLine("\n\n测试DELETE请求:");
 Response<Person> response4 = service.Delete(1);
 Console.WriteLine(JsonConvert.SerializeObject(response4));*/
-
-Console.WriteLine("\n\n拉取百度首页:");
-Response<dynamic> response5 = service.GetBaiduHome();
-Console.WriteLine(JsonConvert.SerializeObject(response5));

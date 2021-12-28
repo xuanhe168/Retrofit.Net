@@ -4,26 +4,25 @@ namespace Retrofit.Net.Core
 {
     public class RetrofitClient
     {
-        readonly List<IInterceptor> _interceptors = new List<IInterceptor>();
-
-        /// <summary>
-        /// Add a new Interceptor
-        /// </summary>
-        /// <param name="interceptor">New Interceptor</param>
-        public void AddInterceptor(IInterceptor interceptor)
+        public List<IInterceptor> Interceptors;
+        public RetrofitClient(Builder builder)
         {
-            if(interceptor is null)throw new ArgumentNullException($"Argument cannot be null of {nameof(interceptor)}");
-            _interceptors.Add(interceptor);
+            Interceptors = builder.Interceptors!;
         }
-
-        public RetrofitClient Build()
+        
+        public class Builder
         {
-            return this;
-        }
+            public List<IInterceptor>? Interceptors { get; private set; }
 
-        public static RetrofitClient Builder()
-        {
-            return new RetrofitClient();
+            public Builder AddInterceptor(IInterceptor interceptor)
+            {
+                if(Interceptors == null)Interceptors = new List<IInterceptor>();
+                if(Interceptors.Any() is false)Interceptors.Add(new DefaultInterceptor());
+                Interceptors?.Add(interceptor);
+                return this;
+            }
+
+            public RetrofitClient Build() => new RetrofitClient(this);
         }
     }
 }

@@ -2,21 +2,31 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Retrofit.Net.Core.Builder;
 using Retrofit.Net.Core.Extensions;
+using Retrofit.Net.Core.Interceptors;
 using Retrofit.Net.Core.Models;
 using Retrofit.Net.Core.Params;
 using System.Net.Http.Headers;
 
 namespace Retrofit.Net.Core
 {
-    public class HttpExecutor
+    public class HttpExecutor : IChain
     {
         MethodBuilder _method;
-        public HttpExecutor(MethodBuilder method)
+        RetrofitClient _retrofitClient;
+        Request _request = new Request();
+        public HttpExecutor(MethodBuilder method,RetrofitClient client)
         {
             _method = method;
+            _retrofitClient = client;
         }
 
         public Response<dynamic> Execute()
+        {
+            var interceptor = _retrofitClient.Interceptors.FirstOrDefault();
+            return interceptor!.Intercept(this);
+        }
+
+        public Response<dynamic> Proceed(Request request)
         {
             Response<dynamic> response = new Response<dynamic>();
             HttpClient _client = new HttpClient();
@@ -24,20 +34,23 @@ namespace Retrofit.Net.Core
             string _requestUrl = _method.Path!;
             if (_method.Method == Method.GET)
             {
-                _requestUrl = GetParams(_requestUrl,_method.Parameters);
+                _requestUrl = GetParams(_requestUrl, _method.Parameters);
                 _responseTask = _client.GetAsync(_requestUrl);
-            } else if (_method.Method == Method.POST)
+            }
+            else if (_method.Method == Method.POST)
             {
                 HttpContent? content = GetParams(_method.Parameters);
                 _responseTask = _client.PostAsync(_requestUrl, content);
-            } else if (_method.Method == Method.PUT)
+            }
+            else if (_method.Method == Method.PUT)
             {
                 _requestUrl = GetParams(_requestUrl, _method.Parameters);
                 HttpContent? content = GetParams(_method.Parameters);
                 _responseTask = _client.PutAsync(_requestUrl, content);
-            } else if (_method.Method == Method.DELETE)
+            }
+            else if (_method.Method == Method.DELETE)
             {
-                _requestUrl = GetParams(_requestUrl,_method.Parameters);
+                _requestUrl = GetParams(_requestUrl, _method.Parameters);
                 _responseTask = _client.DeleteAsync(_requestUrl);
             }
             _responseTask?.Wait();
@@ -49,6 +62,8 @@ namespace Retrofit.Net.Core
             response.Headers = JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, object>>>(json);
             return response;
         }
+
+        public Request Request() => _request;
 
         string GetParams(string baseUrl,IList<Param>? _params)
         {

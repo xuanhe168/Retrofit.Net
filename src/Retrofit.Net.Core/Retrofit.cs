@@ -4,35 +4,52 @@ namespace Retrofit.Net.Core
 {
     public class Retrofit
     {
-        static readonly ProxyGenerator _generator = new ProxyGenerator();
         public string BaseUrl { get; private set; }
-        RetrofitClient Client { get; set; }
+        public RetrofitClient Client { get; private set; }
+        public List<Converts.Converter.Factory> ConverterFactories { get; private set; }
 
-        public Retrofit SetBaseUrl(string url)
+        public Retrofit(Builder builder)
         {
-            BaseUrl = url;
-            return this;
-        }
-
-        public Retrofit SetClient(RetrofitClient client)
-        {
-            Client = client;
-            return this;
-        }
-
-        public Retrofit Build()
-        {
-            return this;
+            BaseUrl = builder.BaseUrl!;
+            Client = builder.Client!;
+            ConverterFactories = builder.ConverterFactories;
         }
 
         public T Create<T>()where T : class
         {
-            return _generator.CreateInterfaceProxyWithoutTarget<T>(new MethodInterceptor(this));
+            ProxyGenerator generator = new ProxyGenerator();
+            return generator.CreateInterfaceProxyWithoutTarget<T>(new MethodInterceptor(this));
         }
 
-        public static Retrofit Builder()
+        public class Builder
         {
-            return new Retrofit();
+            public string? BaseUrl { get; private set; }
+            public RetrofitClient? Client { get; private set; }
+            public readonly List<Converts.Converter.Factory> ConverterFactories =
+                new List<Converts.Converter.Factory>();
+
+            public Builder AddBaseUrl(string url)
+            {
+                BaseUrl = url;
+                return this;
+            }
+
+            public Builder AddClient(RetrofitClient client)
+            {
+                Client = client;
+                return this;
+            }
+
+            public Builder AddConverterFactory(Converts.Converter.Factory factory)
+            {
+                ConverterFactories.Add(factory);
+                return this;
+            }
+
+            public Retrofit Build()
+            {
+                return new Retrofit(this);
+            }
         }
     }
 }
