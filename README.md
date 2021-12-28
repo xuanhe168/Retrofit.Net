@@ -14,19 +14,47 @@ A powerful Http client for .NET, which supports Interceptors, Global configurati
 dependencies:
   dio: ^4.0.5-beta1
 ```
-> Already know Dio 3 and just want to learn about what's new in Dio 4? Check out the [Migration Guide](./migration_to_4.x.md)!
-### Super simple to use
 
-```dart
-import 'package:dio/dio.dart';
-void getHttp() async {
-  try {
-    var response = await Dio().get('http://www.google.com');
-    print(response);
-  } catch (e) {
-    print(e);
-  }
-}
+### Example
+
+Define your request api in IPersonService.cs
+```c#
+public interface IPersonService
+    {
+        [HttpPost("/api/Auth/GetJwtToken")]
+        Response<TokenModel> GetJwtToken([FromForm] AuthModel auth);
+
+        [HttpGet("/api/Person")]
+        Response<IList<Person>> Get();
+
+        [HttpPost("/api/Person")]
+        Response<Person> Add([FromBody] Person person);
+
+        [HttpGet("/api/Person/{id}")]
+        Response<Person> Get([FromPath] int id);
+
+        [HttpPut("/api/Person/{id}")]
+        Response<Person> Update([FromPath] int id, [FromBody] Person person);
+
+        [HttpDelete("/api/Person/{id}")]
+        Response<Person> Delete([FromPath] int id);
+    }
+```
+
+```c#
+using Retrofit.Net.Core;
+using Retrofit.Net.Core.Models;
+
+var builder = RetrofitClient.Builder();
+builder.Authenticator();
+builder.AddInterceptor();
+var client = builder.Build();
+var retrofit = Retrofit.Net.Core.Retrofit.Builder()
+    .SetBaseUrl("https://localhost:7177")
+    .SetClient(client)
+    .Build();
+var service = retrofit.Create<IPersonService>();
+Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Account = "admin", Password = "admin" });
 ```
 
 ## Table of contents
@@ -724,6 +752,5 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 ## Donate
 
 Buy a cup of coffee for me (Scan by wechat)：
-
-![PAY-w100](./Images/pay.jpg)
 ![Contact-w100](./Images/me.jpg)
+![PAY-w100](./Images/pay.jpg)
