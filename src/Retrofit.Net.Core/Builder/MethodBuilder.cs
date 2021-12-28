@@ -59,11 +59,11 @@ namespace Retrofit.Net.Core.Builder
                 .FirstOrDefault() as BaseMethodAttribute;
             if (attribute is not null)
             {
-                Path = $"{BaseUrl}{attribute!.Path}";
-                if (attribute is HttpGetAttribute) Method = Method.GET;
-                else if (attribute is HttpPostAttribute) Method = Method.POST;
-                else if (attribute is HttpPutAttribute) Method = Method.PUT;
-                else if (attribute is HttpDeleteAttribute) Method = Method.DELETE;
+                Path = attribute.Path.Contains("http") != true ? $"{BaseUrl}{attribute!.Path}" : attribute.Path;
+                if(attribute is HttpGetAttribute)Method = Method.GET;
+                else if(attribute is HttpPostAttribute)Method = Method.POST;
+                else if(attribute is HttpPutAttribute)Method = Method.PUT;
+                else if(attribute is HttpDeleteAttribute)Method = Method.DELETE;
             }
             else throw new NotImplementedException($"Not annotation found on method {MethodInfo.Name}");
             Debug.Assert(Path is not null);

@@ -1,18 +1,19 @@
-﻿namespace Retrofit.Net.Core
+﻿using Retrofit.Net.Core.Interceptors;
+
+namespace Retrofit.Net.Core
 {
     public class RetrofitClient
     {
+        readonly List<IInterceptor> _interceptors = new List<IInterceptor>();
+
         /// <summary>
-        /// Authenticator
+        /// Add a new Interceptor
         /// </summary>
-        public void Authenticator()
+        /// <param name="interceptor">New Interceptor</param>
+        public void AddInterceptor(IInterceptor interceptor)
         {
-
-        }
-
-        public void AddInterceptor()
-        {
-
+            if(interceptor is null)throw new ArgumentNullException($"Argument cannot be null of {nameof(interceptor)}");
+            _interceptors.Add(interceptor);
         }
 
         public RetrofitClient Build()

@@ -42,5 +42,8 @@ namespace ExampleConsole
 
         [HttpDelete("/api/Person/{id}")]
         Response<Person> Delete([FromPath] int id);
+
+        [HttpGet("https://www.baidu.com/index.html")]
+        Response<dynamic> GetBaiduHome();
     }
 }

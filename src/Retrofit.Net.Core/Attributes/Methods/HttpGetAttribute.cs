@@ -5,7 +5,7 @@ namespace Retrofit.Net.Core.Attributes.Methods
     {
         public HttpGetAttribute(string path)
         {
-            this.Path = path;
+            Path = path;
         }
     }
 }
