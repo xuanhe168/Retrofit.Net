@@ -2,6 +2,7 @@ namespace Retrofit.Net.Core.Models;
 
 public class Request
 {
+    public string RequestUrl { get; set; }
     public Method Method { get; set; }
     public List<KeyValuePair<string, dynamic>> Headers { get; set; } = new List<KeyValuePair<string, dynamic>>();
 
@@ -11,12 +12,14 @@ public class Request
     {
         Method = builder.Method;
         Headers = builder.Headers;
+        RequestUrl = builder.RequestUrl;
     }
 
     public Builder NewBuilder() => new Builder(this);
 
     public class Builder
     {
+        public string RequestUrl { get; set; }
         public Method Method { get; set; }
         public List<KeyValuePair<string, dynamic>> Headers { get; set; } = new List<KeyValuePair<string, dynamic>>();
 
@@ -24,18 +27,24 @@ public class Request
         {
             Method = request.Method;
             Headers = request.Headers;
+            RequestUrl = request.RequestUrl;
+        }
+
+        public Builder AddRequestUrl(string value)
+        {
+            RequestUrl = value;
+            return this;
+        }
+
+        public Builder AddMethod(Method method)
+        {
+            Method = method;
+            return this;
         }
 
         public Builder AddHeader(string name,string value)
         {
             Headers.Add(new KeyValuePair<string, dynamic>(name, value));
-            return this;
-        }
-
-        public Builder RemoveHeader(string name)
-        {
-            var item = Headers.Where(x => x.Key == name).FirstOrDefault();
-            Headers.Remove(item);
             return this;
         }
 

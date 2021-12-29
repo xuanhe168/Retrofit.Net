@@ -9,7 +9,6 @@ public class HeaderInterceptor : IInterceptor
     {
         Request request = chain.Request().NewBuilder()
             .AddHeader("Token","123")
-            .RemoveHeader("aaa")
             .Build();
         Response<dynamic> response = chain.Proceed(request);
         return response;

@@ -11,9 +11,9 @@ namespace Retrofit.Net.Core
 {
     public class HttpExecutor : IChain
     {
+        Request _request;
         MethodBuilder _method;
         RetrofitClient _retrofitClient;
-        Request _request = new Request();
         public HttpExecutor(MethodBuilder method,RetrofitClient client)
         {
             _method = method;
@@ -22,43 +22,53 @@ namespace Retrofit.Net.Core
 
         public Response<dynamic> Execute()
         {
+            _request = new Request().NewBuilder()
+                .AddMethod(_method.Method)
+                .AddRequestUrl(_method.Path!)
+                .Build();
             var interceptor = _retrofitClient.Interceptors.FirstOrDefault();
             return interceptor!.Intercept(this);
         }
 
         public Response<dynamic> Proceed(Request request)
         {
+            HttpClient client = new HttpClient();
+            HttpRequestMessage? requestMessage = null;
+            if (request.Method == Method.GET)
+            {
+                var requestUrl = GetParams(_request.RequestUrl,_method.Parameters);
+                requestMessage = new HttpRequestMessage(HttpMethod.Get,requestUrl);
+            }
+            else if (request.Method == Method.POST)
+            {
+                requestMessage = new HttpRequestMessage(HttpMethod.Post, request.RequestUrl);
+                HttpContent? content = GetParams(_method.Parameters);
+                requestMessage.Content = content;
+            }else if (request.Method == Method.PUT)
+            {
+                var requestUrl = GetParams(request.RequestUrl, _method.Parameters);
+                HttpContent? content = GetParams(_method.Parameters);
+                requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUrl);
+                requestMessage.Content = content;
+            }else if (request.Method == Method.DELETE)
+            {
+                var requestUrl = GetParams(request.RequestUrl, _method.Parameters);
+                HttpContent? content = GetParams(_method.Parameters);
+                requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
+                requestMessage.Content = content;
+            }
+            
+            foreach (var item in request.Headers)
+            {
+                requestMessage?.Headers.Add(item.Key, item.Value);
+            }
+            
+            HttpResponseMessage responseMessage = client.Send(requestMessage!);
             Response<dynamic> response = new Response<dynamic>();
-            HttpClient _client = new HttpClient();
-            Task<HttpResponseMessage>? _responseTask = null;
-            string _requestUrl = _method.Path!;
-            if (_method.Method == Method.GET)
-            {
-                _requestUrl = GetParams(_requestUrl, _method.Parameters);
-                _responseTask = _client.GetAsync(_requestUrl);
-            }
-            else if (_method.Method == Method.POST)
-            {
-                HttpContent? content = GetParams(_method.Parameters);
-                _responseTask = _client.PostAsync(_requestUrl, content);
-            }
-            else if (_method.Method == Method.PUT)
-            {
-                _requestUrl = GetParams(_requestUrl, _method.Parameters);
-                HttpContent? content = GetParams(_method.Parameters);
-                _responseTask = _client.PutAsync(_requestUrl, content);
-            }
-            else if (_method.Method == Method.DELETE)
-            {
-                _requestUrl = GetParams(_requestUrl, _method.Parameters);
-                _responseTask = _client.DeleteAsync(_requestUrl);
-            }
-            _responseTask?.Wait();
-            HttpResponseMessage httpResp = _responseTask!.Result;
-            string json = JsonConvert.SerializeObject(httpResp.Headers);
-            response.Message = httpResp.ReasonPhrase;
-            response.StatusCode = Convert.ToInt32(httpResp.StatusCode);
-            response.Body = httpResp.Content.ReadAsStringAsync().Result;
+            string json = JsonConvert.SerializeObject(responseMessage.Headers);
+            response.Message = responseMessage.ReasonPhrase;
+            response.StatusCode = Convert.ToInt32(responseMessage.StatusCode);
+            response.Body = responseMessage.Content.ReadAsStringAsync().Result;
             response.Headers = JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, object>>>(json);
             return response;
         }
