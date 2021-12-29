@@ -36,6 +36,9 @@ public interface IPersonService
 
         [HttpDelete("/api/Person/{id}")]
         Response<Person> Delete([FromPath] int id);
+        
+        [HttpGet("https://www.baidu.com/index.html")]
+        Response<dynamic> GetBaiduHome();
     }
 ```
 
@@ -43,13 +46,13 @@ public interface IPersonService
 using Retrofit.Net.Core;
 using Retrofit.Net.Core.Models;
 
-var builder = RetrofitClient.Builder();
-builder.Authenticator();
-builder.AddInterceptor();
-var client = builder.Build();
-var retrofit = Retrofit.Net.Core.Retrofit.Builder()
-    .SetBaseUrl("https://localhost:7177")
-    .SetClient(client)
+var client = new RetrofitClient.Builder()
+    .AddInterceptor(new HeaderInterceptor())
+    .Build();
+var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
+    .AddBaseUrl("https://localhost:7177")
+    .AddClient(client)
+    .AddConverterFactory(GsonConverterFactory.Create())
     .Build();
 var service = retrofit.Create<IPersonService>();
 Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Account = "admin", Password = "admin" });
@@ -97,259 +100,90 @@ Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Accoun
 
 Performing a `GET` request:
 
-```dart
-Response response;
-var dio = Dio();
-response = await dio.get('/test?id=12&name=wendu');
-print(response.data.toString());
-// Optionally the request above could also be done as
-response = await dio.get('/test', queryParameters: {'id': 12, 'name': 'wendu'});
-print(response.data.toString());
+```c#
+Response<IList<Person>> response = await service.Get();
+Console.WriteLine(JsonConvert.SerializeObject(response));
 ```
 
 Performing a `POST` request:
 
-```dart
-response = await dio.post('/test', data: {'id': 12, 'name': 'wendu'});
-```
-
-Performing multiple concurrent requests:
-
-```dart
-response = await Future.wait([dio.post('/info'), dio.get('/token')]);
+```c#
+Response<Person> response = await service.Add(new Person { Id = 1,Name = "老中医",Age = 18});
+Console.WriteLine(JsonConvert.SerializeObject(response));
 ```
 
 Downloading a file:
 
 ```dart
-response = await dio.download('https://www.google.com/', './xx.html');
-```
-
-Get response stream:
-
-```dart
-Response<ResponseBody> rs;
-rs = await Dio().get<ResponseBody>(url,
-  options: Options(responseType: ResponseType.stream),  // set responseType to `stream`
-);
-print(rs.data.stream); //response stream
-```
-
-Get response with bytes:
-
-```dart
-Response<List<int>> rs 
-rs = await Dio().get<List<int>>(url,
- options: Options(responseType: ResponseType.bytes), // set responseType to `bytes`
-);
-print(rs.data); // List<int>
+not implemented
 ```
 
 Sending FormData:
 
-```dart
-var formData = FormData.fromMap({
-  'name': 'wendux',
-  'age': 25,
-});
-var response = await dio.post('/info', data: formData);
+```c#
+Response<TokenModel> authResponse = await service.GetJwtToken(new AuthModel() { Account = "admin",Password = "admin" });
+Console.WriteLine(JsonConvert.SerializeObject(authResponse));
 ```
 
 Uploading multiple files to server by FormData:
 
-```dart
-var formData = FormData.fromMap({
-  'name': 'wendux',
-  'age': 25,
-  'file': await MultipartFile.fromFile('./text.txt', filename: 'upload.txt'),
-  'files': [
-    await MultipartFile.fromFile('./text1.txt', filename: 'text1.txt'),
-    await MultipartFile.fromFile('./text2.txt', filename: 'text2.txt'),
-  ]
-});
-var response = await dio.post('/info', data: formData);
+```c#
+not implemented
 ```
 
 Listening the uploading progress:
 
-```dart
-response = await dio.post(
-  'http://www.dtworkroom.com/doris/1/2.0.0/test',
-  data: {'aa': 'bb' * 22},
-  onSendProgress: (int sent, int total) {
-    print('$sent $total');
-  },
-);
-```
-Post binary data by Stream:
-
-```dart
-// Binary data
-List<int> postData = <int>[...];
-await dio.post(
-  url,
-  data: Stream.fromIterable(postData.map((e) => [e])), //create a Stream<List<int>>
-  options: Options(
-    headers: {
-      Headers.contentLengthHeader: postData.length, // set content-length
-    },
-  ),
-);
+```c#
+not implemented
 ```
 
 …you can find all examples code [here](https://github.com/flutterchina/dio/tree/master/example).
 
 
 
-## Dio APIs
+## Retrofit.Net APIs
 
 ### Creating an instance and set default configs.
 
-You can create instance of Dio with an optional `BaseOptions` object:
+You can create instance of Retrofit with an optional `Retrofit.Builder` object:
 
-```dart
-var dio = Dio(); // with default Options
-// Set default configs
-dio.options.baseUrl = 'https://www.xx.com/api';
-dio.options.connectTimeout = 5000; //5s
-dio.options.receiveTimeout = 3000;
-// or new Dio with a BaseOptions instance.
-var options = BaseOptions(
-  baseUrl: 'https://www.xx.com/api',
-  connectTimeout: 5000,
-  receiveTimeout: 3000,
-);
-Dio dio = Dio(options);
+```c#
+var client = new RetrofitClient.Builder()
+    .AddInterceptor(new HeaderInterceptor()) // Add Interceptor
+    .Build();
+var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
+    .AddBaseUrl("https://localhost:7177")  // Server address
+    .AddClient(client)
+    .AddConverterFactory(GsonConverterFactory.Create()) // Message Content Converter
+    .Build();
 ```
-
-The core API in Dio instance is:
-
-**Future<Response> request(String path, {data,Map queryParameters, Options options,CancelToken cancelToken, ProgressCallback onSendProgress,
-    ProgressCallback onReceiveProgress)**
-
-```dart
-response = await dio.request(
-  '/test',
-  data: {'id':12,'name':'xx'},
-  options: Options(method:'GET'),
-);
-```
-
-### Request method aliases
-
-For convenience aliases have been provided for all supported request methods.
-
-**Future<Response> get(...)**
-
-**Future<Response> post(...)**
-
-**Future<Response> put(...)**
-
-**Future<Response> delete(...)**
-
-**Future<Response> head(...)**
-
-**Future<Response> put(...)**
-
-**Future<Response> path(...)**
-
-**Future<Response> download(...)**
-
-**Future<Response> fetch(RequestOptions)**  new*
-
-
-## Request Options
-
-The Options class describes the http request information and configuration. Each Dio instance has a base config for all requests maked by itself, and we can override the base config with [Options] when make a single request.  The  [BaseOptions] declaration as follows:
-
-```dart
-{
-  /// Http method.
-  String method;
-  /// Request base url, it can contain sub path, like: 'https://www.google.com/api/'.
-  String baseUrl;
-  /// Http request headers.
-  Map<String, dynamic> headers;
-   /// Timeout in milliseconds for opening  url.
-  int connectTimeout;
-   ///  Whenever more than [receiveTimeout] (in milliseconds) passes between two events from response stream,
-  ///  [Dio] will throw the [DioError] with [DioErrorType.RECEIVE_TIMEOUT].
-  ///  Note: This is not the receiving time limitation.
-  int receiveTimeout;
-  /// Request data, can be any type.
-  T data;
-  /// If the `path` starts with 'http(s)', the `baseURL` will be ignored, otherwise,
-  /// it will be combined and then resolved with the baseUrl.
-  String path='';
-  /// The request Content-Type. The default value is 'application/json; charset=utf-8'.
-  /// If you want to encode request body with 'application/x-www-form-urlencoded',
-  /// you can set [Headers.formUrlEncodedContentType], and [Dio]
-  /// will automatically encode the request body.
-  String contentType;
-  /// [responseType] indicates the type of data that the server will respond with
-  /// options which defined in [ResponseType] are `JSON`, `STREAM`, `PLAIN`.
-  ///
-  /// The default value is `JSON`, dio will parse response string to json object automatically
-  /// when the content-type of response is 'application/json'.
-  ///
-  /// If you want to receive response data with binary bytes, for example,
-  /// downloading a image, use `STREAM`.
-  ///
-  /// If you want to receive the response data with String, use `PLAIN`.
-  ResponseType responseType;
-  /// `validateStatus` defines whether the request is successful for a given
-  /// HTTP response status code. If `validateStatus` returns `true` ,
-  /// the request will be perceived as successful; otherwise, considered as failed.
-  ValidateStatus validateStatus;
-  /// Custom field that you can retrieve it later in [Interceptor]、[Transformer] and the   [Response] object.
-  Map<String, dynamic> extra;
-  
-  /// Common query parameters
-  Map<String, dynamic /*String|Iterable<String>*/ > queryParameters;  
-  
-   /// [collectionFormat] indicates the format of collection data in request
-  /// options which defined in [CollectionFormat] are `csv`, `ssv`, `tsv`, `pipes`, `multi`,`multiCompatible`.
-  /// The default value is `multiCompatible`
-  late CollectionFormat collectionFormat;
-}
-```
-
-There is a complete example [here](https://github.com/flutterchina/dio/blob/master/example/options.dart).
 
 ## Response Schema
 
 The response for a request contains the following information.
 
-```dart
+```c#
+public class Response<T>
 {
-  /// Response body. may have been transformed, please refer to [ResponseType].
-  T? data;
-  /// Response headers.
-  Headers headers;
-  /// The corresponding request info.
-  Options request;
-  /// Http status code.
-  int? statusCode;
-  String? statusMessage;
-  /// Whether redirect 
-  bool? isRedirect;  
-  /// redirect info    
-  List<RedirectInfo> redirects ;
-  /// Returns the final real request uri (maybe redirect). 
-  Uri realUri;    
-  /// Custom field that you can retrieve it later in `then`.
-  Map<String, dynamic> extra;
+   // Http message
+   public string? Message { get; internal set; }
+   // Response body. may have been transformed, please refer to Retrofit.Builder.AddConverterFactory(...).
+   public T? Body { get; internal set; }
+   // Http status code.
+   public int StatusCode { get; internal set; }
+   // Response headers.
+   public IEnumerable<KeyValuePair<string, object>>? Headers { get; internal set; }
 }
 ```
 
 When request is succeed, you will receive the response as follows:
 
-```dart
-Response response = await dio.get('https://www.google.com');
-print(response.data);
-print(response.headers);
-print(response.requestOptions);
-print(response.statusCode);
+```c#
+Response<IList<Person>> response = await service.Get();
+Console.WriteLine(response.Body);
+Console.WriteLine(response.Message);
+Console.WriteLine(response.StatusCode);
+Console.WriteLine(response.Headers);
 ```
 
 ## Interceptors
