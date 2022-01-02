@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Retrofit.Net</id>
+    <version>1.0.0</version>
+    <description>
+      🔥🔥🔥A powerful Http client for .NET, which supports Interceptors, Global configuration, FormData, Request Cancellation, File downloading, Timeout etc. 
+    </description>
+    <authors>老中医</authors>
+	<owners>老中医</owners>
+    <license type="file">license\license.txt</license>
+  </metadata>
+</package>
