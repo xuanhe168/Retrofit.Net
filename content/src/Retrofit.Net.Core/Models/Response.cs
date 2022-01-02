@@ -6,5 +6,10 @@
         public T? Body { get; internal set; }
         public int StatusCode { get; internal set; }
         public IEnumerable<KeyValuePair<string, object>>? Headers { get; internal set; }
+
+        public bool IsSuccessful
+        {
+            get => StatusCode == 200;
+        }
     }
 }

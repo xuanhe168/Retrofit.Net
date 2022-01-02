@@ -40,8 +40,7 @@ namespace Retrofit.Net.Core
                 {
                     bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
                 }
-                catch (Exception ex) { }
-                finally { bodyValue = response.Body; }
+                catch (Exception ex) { bodyValue = response.Body; }
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
@@ -57,8 +56,7 @@ namespace Retrofit.Net.Core
                 try
                 {
                     bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
-                }catch (Exception ex) { }
-                finally { bodyValue = response.Body; }
+                }catch (Exception ex) { bodyValue = response.Body; }
 
                 returnType.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 returnType.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
