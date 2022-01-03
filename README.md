@@ -8,9 +8,9 @@
 
 ### Add dependency
 
-```yaml
+```.NET-CLI
 dependencies:
-  dio: ^4.0.5-beta1
+  dotnet add package RetrofitNet --version 1.0.0
 ```
 
 ### Example
