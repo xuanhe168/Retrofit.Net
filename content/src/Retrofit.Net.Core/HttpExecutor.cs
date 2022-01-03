@@ -36,7 +36,7 @@ namespace Retrofit.Net.Core
             HttpRequestMessage? requestMessage = null;
             if (request.Method == Method.GET)
             {
-                var requestUrl = GetParams(_request.RequestUrl,_method.Parameters);
+                var requestUrl = GetUrlByParam(_request.RequestUrl,_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Get,requestUrl);
             }
             else if (request.Method == Method.POST)
@@ -46,13 +46,13 @@ namespace Retrofit.Net.Core
                 requestMessage.Content = content;
             }else if (request.Method == Method.PUT)
             {
-                var requestUrl = GetParams(request.RequestUrl, _method.Parameters);
+                var requestUrl = GetUrlByParam(request.RequestUrl, _method.Parameters);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUrl);
                 requestMessage.Content = content;
             }else if (request.Method == Method.DELETE)
             {
-                var requestUrl = GetParams(request.RequestUrl, _method.Parameters);
+                var requestUrl = GetUrlByParam(request.RequestUrl, _method.Parameters);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
                 requestMessage.Content = content;
@@ -60,7 +60,7 @@ namespace Retrofit.Net.Core
             
             foreach (var item in request.Headers)
             {
-                requestMessage?.Headers.Add(item.Key, item.Value);
+                if(item.Value is not null)requestMessage?.Headers.Add(item.Key, item.Value);
             }
             
             HttpResponseMessage responseMessage = client.Send(requestMessage!);
@@ -75,17 +75,31 @@ namespace Retrofit.Net.Core
 
         public Request Request() => _request;
 
-        string GetParams(string baseUrl,IList<Param>? _params)
+        string GetUrlByParam(string baseUrl,IList<Param>? _params)
         {
             if (baseUrl.Contains("{"))baseUrl = baseUrl[0..baseUrl.LastIndexOf("{")];
             for (int i = 0; i < _params?.Count; i++)
             {
-                var param = _params[i];
-                if(param.Kind == ParamKind.Query)
+                Param param = _params[i];
+                if (param.Kind == ParamKind.Query)
                 {
                     if(baseUrl.Contains('?') is false)baseUrl += "?";
-                    baseUrl += $"{param.Name}={param.Value}";
-                    if(i < (_params!.Count - 1))baseUrl += "&";
+
+                    Type valueType = param.GetType();
+                    if (valueType.IsClass)
+                    {
+                        IList<KeyValuePair<string, dynamic>>? fields = ConvertExtensions.GetProperties(param.Value);
+                        foreach(var item in fields)
+                        {
+                            baseUrl += $"{item.Key}={item.Value}";
+                            if(fields.IndexOf(item) < fields.Count - 1)baseUrl += "&";
+                        }
+                    }
+                    else
+                    {
+                        baseUrl += $"{param.Name}={param.Value}";
+                        if (i < (_params!.Count - 1)) baseUrl += "&";
+                    }
                 }
                 else if(param.Kind == ParamKind.Path)baseUrl += param.Value;
             }

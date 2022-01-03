@@ -25,6 +25,9 @@ namespace ExampleConsole
         [HttpDelete("/api/Person/{id}")]
         Task<Response<Person>> Delete([FromPath] int id);
 
+        [HttpGet("/api/v1/Game/Get")]
+        Task<Response<ResponsePage<GameEntity>>> GetGames([FromQuery] RequestPage req);
+
         /*[HttpPost("/api/Auth/GetJwtToken")]
         Response<TokenModel> GetJwtToken([FromForm] AuthModel auth);
 

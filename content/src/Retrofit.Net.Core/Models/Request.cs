@@ -4,7 +4,7 @@ public class Request
 {
     public string RequestUrl { get; set; }
     public Method Method { get; set; }
-    public List<KeyValuePair<string, dynamic>> Headers { get; set; } = new List<KeyValuePair<string, dynamic>>();
+    public List<KeyValuePair<string, string>> Headers { get; set; } = new List<KeyValuePair<string, string>>();
 
     public Request() { }
 
@@ -21,7 +21,7 @@ public class Request
     {
         public string RequestUrl { get; set; }
         public Method Method { get; set; }
-        public List<KeyValuePair<string, dynamic>> Headers { get; set; } = new List<KeyValuePair<string, dynamic>>();
+        public List<KeyValuePair<string, string>> Headers { get; set; } = new List<KeyValuePair<string, string>>();
 
         public Builder(Request request)
         {
@@ -44,7 +44,7 @@ public class Request
 
         public Builder AddHeader(string name,string value)
         {
-            Headers.Add(new KeyValuePair<string, dynamic>(name, value));
+            Headers.Add(new KeyValuePair<string, string>(name, value));
             return this;
         }
 
