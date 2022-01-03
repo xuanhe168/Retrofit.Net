@@ -6,10 +6,9 @@
 
 ## Get started
 
-### Add dependency
+### Add dependency(.NET-CLI)
 
-```.NET-CLI
-dependencies:
+```
   dotnet add package RetrofitNet --version 1.0.0
 ```
 
