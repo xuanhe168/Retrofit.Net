@@ -6,11 +6,11 @@
 
 ## Get started
 
-### Add dependency
+### Add dependency(.NET-CLI)
+[RetrofitNet](https://www.nuget.org/packages/RetrofitNet/)
 
-```yaml
-dependencies:
-  dio: ^4.0.5-beta1
+```
+  dotnet add package RetrofitNet --version 1.0.0
 ```
 
 ### Example
@@ -18,28 +18,28 @@ dependencies:
 Define your request api in IPersonService.cs
 ```c#
 public interface IPersonService
-    {
-        [HttpPost("/api/Auth/GetJwtToken")]
-        Response<TokenModel> GetJwtToken([FromForm] AuthModel auth);
+{
+  [HttpPost("/api/Auth/GetJwtToken")]
+  Response<TokenModel> GetJwtToken([FromForm] AuthModel auth);
 
-        [HttpGet("/api/Person")]
-        Response<IList<Person>> Get();
+  [HttpGet("/api/Person")]
+  Response<IList<Person>> Get();
 
-        [HttpPost("/api/Person")]
-        Response<Person> Add([FromBody] Person person);
+  [HttpPost("/api/Person")]
+  Response<Person> Add([FromBody] Person person);
 
-        [HttpGet("/api/Person/{id}")]
-        Response<Person> Get([FromPath] int id);
+  [HttpGet("/api/Person/{id}")]
+  Response<Person> Get([FromPath] int id);
 
-        [HttpPut("/api/Person/{id}")]
-        Response<Person> Update([FromPath] int id, [FromBody] Person person);
+  [HttpPut("/api/Person/{id}")]
+  Response<Person> Update([FromPath] int id, [FromBody] Person person);
 
-        [HttpDelete("/api/Person/{id}")]
-        Response<Person> Delete([FromPath] int id);
+  [HttpDelete("/api/Person/{id}")]
+  Response<Person> Delete([FromPath] int id);
         
-        [HttpGet("https://www.baidu.com/index.html")]
-        Response<dynamic> GetBaiduHome();
-    }
+  [HttpGet("https://www.baidu.com/index.html")]
+  Response<dynamic> GetBaiduHome();
+}
 ```
 
 ```c#
