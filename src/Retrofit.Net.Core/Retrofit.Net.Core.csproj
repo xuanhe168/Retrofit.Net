@@ -4,7 +4,38 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <FileVersion>1.0.2</FileVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <PackageReleaseNotes>initialize....</PackageReleaseNotes>
+    <PackageTags>restful,framework,retrofit</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/mingyouzhu/Retrofit.Net.git</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/mingyouzhu/Retrofit.Net</PackageProjectUrl>
+    <Copyright>Copyright 2022 by 老中医</Copyright>
+    <Description>🔥🔥🔥A powerful Http client for .NET, which supports Interceptors, Global configuration, FormData, Request Cancellation, File downloading, Timeout etc.</Description>
+    <Product>RetrofitNet</Product>
+    <Company>老中医网络科技有限公司</Company>
+    <Authors>老中医</Authors>
+    <Version>1.0.2</Version>
+    <PackageId>RetrofitNet</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\license\license.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
