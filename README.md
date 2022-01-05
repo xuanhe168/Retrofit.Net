@@ -1,15 +1,50 @@
-﻿# Retrofit.NET
+﻿
 
+
+## Table of contents
+- [About Retrofit.Net](#About Retrofit.Net)
+- [Support Runtime Version](#Support-Runtime-Version)
+- [Installing](#Installing)
+- [The Restfull with Retrofit.Net](#The-Restfull-with-Retrofit.Net)
+- [Retrofit.Net APIs](#Retrofit.Net-APIs)
+- [Request Options](#request-options)
+- [Response Schema](#response-schema)
+- [Interceptors](#interceptors)
+  - [Simple interceptor](#Simple-interceptor)
+  - [Resolve and reject the request](#Resolve-and-reject-the-request)
+  - [Log Interceptor](#Log-Interceptor)
+  - [Advanced interceptor](#Advanced-interceptor)
+- [Cookie Manager](#cookie-manager)
+- [Handling Errors](#handling-errors)
+- [Using application/x-www-form-urlencoded format](#using-applicationx-www-form-urlencoded-format)
+- [Sending FormData](#sending-formdata)
+- [Transformer](#Transformer)
+- [Set proxy and HttpClient config](#set-proxy-and-httpclient-config)
+- [Https certificate verification](#https-certificate-verification)
+- [Http2 support](#http2-support )
+- [Features and bugs](#features-and-bugs)
+
+# About Retrofit.Net
 🔥🔥🔥A powerful Http client for .NET, which supports Interceptors, Global configuration, FormData, Request Cancellation, File downloading, Timeout etc. 
 
-## Get started
+# Support Runtime Version
+| Target Framework  | Version |  Yes/No |
+| --------          | -----:  | :----:  |
+| .NET              | 6.x     |   Yes   |
+| .NET              | 5.x     |   No   |
+| .NET Core         | 3.x     |   No   |
+| .NET Core         | 2.x     |   No   |
+| .NET Standard     | 2.1     |   No   |
+| .NET Standard     | 2.0     |   No   |
+| .NET Standard     | 1.x     |   No   |
+| .NET Framework    | All     |   No   |
 
-### Add dependency(.NET-CLI)
-```
+# Installing
+```cmd
   dotnet add package RetrofitNet
 ```
 
-### Example
+## The Restfull with Retrofit.Net
 
 Define your request api in IPersonService.cs
 ```c#
@@ -53,42 +88,6 @@ var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
 var service = retrofit.Create<IPersonService>();
 Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Account = "admin", Password = "admin" });
 ```
-
-## Table of contents
-
-- [Examples](#examples)
-
-- [Retrofit.Net APIs](#Retrofit.Net-APIs)
-
-- [Request Options](#request-options)
-
-- [Response Schema](#response-schema)
-
-- [Interceptors](#interceptors)
-  - [Simple interceptor](#Simple-interceptor)
-  - [Resolve and reject the request](#Resolve-and-reject-the-request)
-
-- [Cookie Manager](#cookie-manager)
-
-- [Handling Errors](#handling-errors)
-
-- [Using application/x-www-form-urlencoded format](#using-applicationx-www-form-urlencoded-format)
-
-- [Sending FormData](#sending-formdata)
-
-- [Transformer](#Transformer)
-
-- [Set proxy and HttpClient config](#set-proxy-and-httpclient-config)
-
-- [Https certificate verification](#https-certificate-verification)
-
-- [Http2 support](#http2-support )
-
-- [Features and bugs](#features-and-bugs)
-
-  
-
-## Examples
 
 Performing a `GET` request:
 
@@ -277,7 +276,7 @@ Because of security reasons, we need all the requests to set up a csrfToken in t
    ); 
 ```
 
-### Log
+### Log Interceptor
 
 You can set  `LogInterceptor` to  print request/response log automaticlly, for example:
 
@@ -285,9 +284,10 @@ You can set  `LogInterceptor` to  print request/response log automaticlly, for e
 dio.interceptors.add(LogInterceptor(responseBody: false)); //开启请求日志
 ```
 
-### Custom Interceptor
+### Advanced interceptor
 
-You can custom interceptor by extending the `Interceptor/QueuedInterceptor` class. There is an example that implementing a simple cache policy: [custom cache interceptor](https://github.com/flutterchina/dio/blob/master/example/custom_cache_interceptor.dart).
+You can custom interceptor by extending the `Interceptor/QueuedInterceptor` class. There is an example that implementing a simple cache policy.
+
 
 ## Cookie Manager
 
