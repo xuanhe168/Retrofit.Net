@@ -5,8 +5,6 @@
 ## Get started
 
 ### Add dependency(.NET-CLI)
-[RetrofitNet](https://www.nuget.org/packages/RetrofitNet/)
-
 ```
   dotnet add package RetrofitNet
 ```
@@ -60,13 +58,15 @@ Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Accoun
 
 - [Examples](#examples)
 
-- [Dio APIs](#dio-apis)
+- [Retrofit.Net APIs](#Retrofit.Net-APIs)
 
 - [Request Options](#request-options)
 
 - [Response Schema](#response-schema)
 
 - [Interceptors](#interceptors)
+  - [Simple interceptor](#Simple-interceptor)
+  - [Resolve and reject the request](#Resolve-and-reject-the-request)
 
 - [Cookie Manager](#cookie-manager)
 
@@ -81,12 +81,6 @@ Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Accoun
 - [Set proxy and HttpClient config](#set-proxy-and-httpclient-config)
 
 - [Https certificate verification](#https-certificate-verification)
-
-- [HttpClientAdapter](#httpclientadapter )
-
-- [Cancellation](#cancellation)
-
-- [Extends Dio class](#extends-dio-class)
 
 - [Http2 support](#http2-support )
 
@@ -135,7 +129,7 @@ Listening the uploading progress:
 not implemented
 ```
 
-…you can find all examples code [here](https://github.com/flutterchina/dio/tree/master/example).
+…you can find all examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/master/example/ExampleConsole).
 
 
 
@@ -213,7 +207,7 @@ dio.interceptors.add(InterceptorsWrapper(
 ));
 ```
 
-Simple interceptor example:
+### Simple interceptor:
 
 ```dart
 import 'package:dio/dio.dart';
@@ -236,7 +230,6 @@ class CustomInterceptors extends Interceptor {
 }
 ```
 
-
 ### Resolve and reject the request
 
 In all interceptors, you can interfere with their execution flow. If you want to resolve the request/response with some custom data，you can call `handler.resolve(Response)`.  If you want to reject the request/response with a error message, you can call `handler.reject(dioError)` .
@@ -250,10 +243,6 @@ dio.interceptors.add(InterceptorsWrapper(
 Response response = await dio.get('/test');
 print(response.data);//'fake data'
 ```
-
-### QueuedInterceptor
-
-`Interceptor` can be executed concurrently, that is, all of the requests enter the interceptor at once, rather than executing sequentially.  However, in some cases we expect that requests enter the interceptor sequentially like #590 。 Therefore, we need to provide a mechanism for sequential access（one by one） to interceptors  and `QueuedInterceptor` can solve this problem.
 
 #### Example
 
@@ -287,10 +276,6 @@ Because of security reasons, we need all the requests to set up a csrfToken in t
     },
    ); 
 ```
-
-You can clean the waiting queue by calling `clear()`;
-
-For complete codes click [here](https://github.com/flutterchina/dio/blob/develop/example/queued_interceptor_crsftoken.dart).
 
 ### Log
 
@@ -456,20 +441,6 @@ void main() {
 
 There is an example for [customizing Transformer](https://github.com/flutterchina/dio/blob/master/example/transfomer.dart).
 
-## HttpClientAdapter
-
-HttpClientAdapter is a bridge between Dio and HttpClient.
-
-Dio implements standard and friendly API  for developer.
-
-HttpClient: It is the real object that makes Http requests.
-
-We can use any HttpClient not just `dart:io:HttpClient` to make the Http request.  And  all we need is providing a `HttpClientAdapter`. The default HttpClientAdapter for Dio is `DefaultHttpClientAdapter`.
-
-```dart
-dio.httpClientAdapter = new DefaultHttpClientAdapter();
-```
-
 [Here](https://github.com/flutterchina/dio/blob/master/example/adapter.dart) is a simple example to custom adapter. 
 
 ### Using proxy
@@ -527,57 +498,15 @@ In this way,  the format of certificate must be PEM or PKCS12.
 
 [dio_http2_adapter](https://github.com/flutterchina/dio/tree/master/plugins/http2_adapter) package is a Dio HttpClientAdapter which support Http/2.0 .
 
-## Cancellation
-
-You can cancel a request using a *cancel token*. One token can be shared with multiple requests. When a token's  `cancel` method invoked, all requests with this token will be cancelled.
-
-```dart
-CancelToken token = CancelToken();
-dio.get(url, cancelToken: token)
-   .catchError((DioError err){
-    if (CancelToken.isCancel(err)) {
-      print('Request canceled! '+ err.message)
-    }else{
-      // handle error.
-    }
-   });
-// cancel the requests with "cancelled" message.
-token.cancel('cancelled');
-```
-
-There is a complete example [here](https://github.com/flutterchina/dio/blob/master/example/cancel_request.dart).
-
-## Extends Dio class
-
-`Dio` is a abstract class with factory constructor，so we don't extend `Dio` class directy. For this purpose,  we can extend `DioForNative` or `DioForBrowser` instead, for example:
-
-```dart
-import 'package:dio/dio.dart';
-import 'package:dio/native_imp.dart'; //If in browser, import 'package:dio/browser_imp.dart'
-class Http extends DioForNative {
-  Http([BaseOptions options]):super(options){
-    // do something
-  }
-}
-```
-
-We can also implement our Dio client:
-
-```dart
-class MyDio with DioMixin implements Dio{
-  // ...
-}
-```
-
 ## Copyright & License
 
-This open source project authorized by https://flutterchina.club , and the license is MIT.
+This open source project authorized by https://github.com, and the license is MIT.
 
 ## Features and bugs
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: https://github.com/flutterchina/dio/issues
+[tracker]: https://github.com/mingyouzhu/Retrofit.Net/issues
 
 ## Donate
 
