@@ -8,7 +8,7 @@
 [RetrofitNet](https://www.nuget.org/packages/RetrofitNet/)
 
 ```
-  dotnet add package RetrofitNet --version 1.0.0
+  dotnet add package RetrofitNet
 ```
 
 ### Example
