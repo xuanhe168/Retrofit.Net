@@ -1,5 +1,4 @@
-﻿
-
+﻿![](./Images/demo.png)
 
 ## Table of contents
 - [About Retrofit.Net](#About-Retrofit.Net)
@@ -353,8 +352,6 @@ enum DioErrorType {
   other,
 }
 ```
-
-
 
 ## Using application/x-www-form-urlencoded format
 
