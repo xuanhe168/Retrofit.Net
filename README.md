@@ -1,6 +1,4 @@
-﻿Language: [English](README.md) | [中文简体](README-ZH.md)
-
-# Retrofit.NET
+﻿# Retrofit.NET
 
 🔥🔥🔥A powerful Http client for .NET, which supports Interceptors, Global configuration, FormData, Request Cancellation, File downloading, Timeout etc. 
 
