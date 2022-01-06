@@ -236,10 +236,10 @@ public Response<dynamic> Intercept(IChain chain)
 not implemented...
 `Transformer` allows changes to the request/response data before it is sent/received to/from the server. This is only applicable for request methods 'PUT', 'POST', and 'PATCH'. Dio has already implemented a `DefaultTransformer`, and as the default `Transformer`. If you want to customize the transformation of request/response data, you can provide a `Transformer` by your self, and replace the `DefaultTransformer` by setting the `dio.transformer`.
 
-### Using proxy
+## Using proxy
 There is a complete example [here](xxx).
 
-### Https certificate verification
+## Https certificate verification
 
 ## Copyright & License
 
