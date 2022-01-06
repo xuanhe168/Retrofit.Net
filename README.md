@@ -20,9 +20,9 @@
   - [Simple interceptor](#Simple-interceptor)
   - [Advanced interceptor](#Advanced-interceptor)
     - [Resolve and reject the request](#Resolve-and-reject-the-request)
-- [Transformer](#Transformer)
-- [Set proxy and HttpClient config](#set-proxy-and-httpclient-config)
-- [Https certificate verification](#https-certificate-verification)
+- [Transformer(not implemented...)](#Transformer)
+- [Set proxy and HttpClient config(not implemented...)](#set-proxy-and-httpclient-config)
+- [Https certificate verification(not implemented...)](#https-certificate-verification)
 - [Features and bugs](#features-and-bugs)
 
 # About Retrofit.Net
@@ -232,119 +232,14 @@ public Response<dynamic> Intercept(IChain chain)
 }
 ```
 
-## Using application/x-www-form-urlencoded format
-
-By default, Dio serializes request data(except String type) to `JSON`. To send data in the `application/x-www-form-urlencoded` format instead, you can :
-
-```dart
-//Instance level
-dio.options.contentType= Headers.formUrlEncodedContentType;
-//or works once
-dio.post(
-  '/info',
-  data: {'id': 5},
-  options: Options(contentType: Headers.formUrlEncodedContentType),
-);
-```
-
-## Sending FormData
-
-You can also send FormData with Dio, which will send data in the `multipart/form-data`, and it supports uploading files.
-
-```dart
-var formData = FormData.fromMap({
-  'name': 'wendux',
-  'age': 25,
-  'file': await MultipartFile.fromFile('./text.txt',filename: 'upload.txt')
-});
-response = await dio.post('/info', data: formData);
-```
-
-There is a complete example [here](https://github.com/flutterchina/dio/blob/master/example/formdata.dart).
-
-### Multiple files upload
-
-There are two ways to add multiple files to ` FormData`， the only difference is that upload keys are different for array types。
-
-```dart
-FormData.fromMap({
-  'files': [
-    MultipartFile.fromFileSync('./example/upload.txt', filename: 'upload.txt'),
-    MultipartFile.fromFileSync('./example/upload.txt', filename: 'upload.txt'),
-  ]
-});
-```
-
-The upload key eventually becomes 'files[]'，This is because many back-end services add a middle bracket to key when they get an array of files. **If you don't want “[]”**，you should create FormData as follows（Don't use `FormData.fromMap`）:
-
-```dart
-var formData = FormData();
-formData.files.addAll([
-  MapEntry('files',
-    MultipartFile.fromFileSync('./example/upload.txt',filename: 'upload.txt'),
-  ),
-  MapEntry('files',
-    MultipartFile.fromFileSync('./example/upload.txt',filename: 'upload.txt'),
-  ),
-]);
-```
-
 ## Transformer
-
+not implemented...
 `Transformer` allows changes to the request/response data before it is sent/received to/from the server. This is only applicable for request methods 'PUT', 'POST', and 'PATCH'. Dio has already implemented a `DefaultTransformer`, and as the default `Transformer`. If you want to customize the transformation of request/response data, you can provide a `Transformer` by your self, and replace the `DefaultTransformer` by setting the `dio.transformer`.
 
-
-
 ### Using proxy
-
-`DefaultHttpClientAdapter` provide a callback to set proxy to `dart:io:HttpClient`, for example:
-
-```dart
-import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
-...
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-  // config the http client
-  client.findProxy = (uri) {
-    //proxy all request to localhost:8888
-    return 'PROXY localhost:8888';
-  };
-  // you can also create a new HttpClient to dio
-  // return HttpClient();
-};
-```
-
-There is a complete example [here](https://github.com/flutterchina/dio/blob/master/example/proxy.dart).
+There is a complete example [here](xxx).
 
 ### Https certificate verification
-
-There are two ways  to verify the https certificate. Suppose the certificate format is PEM, the code like:
-
-```dart
-String PEM='XXXXX'; // certificate content
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-  client.badCertificateCallback=(X509Certificate cert, String host, int port){
-    if(cert.pem==PEM){ // Verify the certificate
-      return true;
-    }
-    return false;
-  };
-};
-```
-
-Another way is creating a `SecurityContext` when create the `HttpClient`:
-
-```dart
-(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-  SecurityContext sc = SecurityContext();
-  //file is the path of certificate
-  sc.setTrustedCertificates(file);
-  HttpClient httpClient = HttpClient(context: sc);
-  return httpClient;
-};
-```
-
-In this way,  the format of certificate must be PEM or PKCS12.
 
 ## Copyright & License
 
