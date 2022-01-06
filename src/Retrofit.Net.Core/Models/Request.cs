@@ -2,7 +2,7 @@ namespace Retrofit.Net.Core.Models;
 
 public class Request
 {
-    public string RequestUrl { get; set; }
+    public string Path { get; set; }
     public Method Method { get; set; }
     public List<KeyValuePair<string, string>> Headers { get; set; } = new List<KeyValuePair<string, string>>();
 
@@ -12,7 +12,7 @@ public class Request
     {
         Method = builder.Method;
         Headers = builder.Headers;
-        RequestUrl = builder.RequestUrl;
+        Path = builder.RequestUrl;
     }
 
     public Builder NewBuilder() => new Builder(this);
@@ -27,7 +27,7 @@ public class Request
         {
             Method = request.Method;
             Headers = request.Headers;
-            RequestUrl = request.RequestUrl;
+            RequestUrl = request.Path;
         }
 
         public Builder AddRequestUrl(string value)
