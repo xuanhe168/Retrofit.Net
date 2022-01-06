@@ -1,4 +1,4 @@
-﻿![](./Images/demo.png)
+﻿![](./Images/Demo.png)
 
 ## Table of contents
 - [About Retrofit.Net](#About-Retrofit.Net)
