@@ -1,6 +1,4 @@
-﻿![](./Images/demo.png)
-
-## Table of contents
+﻿## Table of contents
 - [About Retrofit.Net](#About-Retrofit.Net)
 - [Support Runtime Version](#Support-Runtime-Version)
 - [Installing](#Installing)
@@ -11,7 +9,8 @@
     - [Send Post request](#Send-Get-request)
     - [Send Put request](#Send-Get-request)
     - [Send Delete request](#Send-Get-request)
-    - [Uploading multiple files to server by FormData](#Uploading-multiple-files-to-server-by-FormData)
+    - [Uploading multiple files to server by FormData(Not implemented...)](#Uploading-multiple-files-to-server-by-FormData)
+    - [Downloading file(Not implemented...)](#Downloading-file)
 - [Content-type](#Content-type)
 - [Retrofit.Net APIs](#Retrofit.Net-APIs)
 - [Request Options](#request-options)
@@ -108,6 +107,10 @@ var response = service.Update(1, new Person() { Name = "Charlie" });
 var response = service.Delete(1);
 ```
 ### Uploading multiple files to server by FormData
+```c#
+
+```
+### Downloading file
 ```c#
 
 ```
