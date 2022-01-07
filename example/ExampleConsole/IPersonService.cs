@@ -49,7 +49,10 @@ namespace ExampleConsole
         [HttpGet("https://www.baidu.com/index.html")]
         Response<dynamic> GetBaiduHome();
 
-        [HttpGet("http://localhost:5062/WeatherForecast")]
+        [HttpGet("https://localhost:7283/WeatherForecast")]
         Response<WeatherEntity> GetWeather();
+
+        [HttpPost("https://localhost:7283/WeatherForecast")]
+        Response<string> Submit([FromForm]SubmitEntity submit);
     }
 }

@@ -4,6 +4,7 @@ using ExampleConsole.Models;
 using Newtonsoft.Json;
 using Retrofit.Net.Core;
 using Retrofit.Net.Core.Converts;
+using Retrofit.Net.Core.Models;
 
 var client = new RetrofitClient.Builder()
     .AddInterceptor(new HeaderInterceptor())
@@ -16,9 +17,14 @@ var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .Build();
 var service = retrofit.Create<IPersonService>();
 
-var response = service.GetWeather();
+var response = service.Submit(new SubmitEntity{ 
+        Name = "老中医",
+        File = new FieldFile{ FilePath = "/Users/onllyarchibald/Downloads/icon_unlocked.png" }
+    });
 Console.WriteLine(JsonConvert.SerializeObject(response));
 
+/*var response = service.GetWeather();
+Console.WriteLine(JsonConvert.SerializeObject(response));*/
 
 //var response = service.GetBaiduHome();
 //Console.WriteLine(JsonConvert.SerializeObject(response));

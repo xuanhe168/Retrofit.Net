@@ -9,9 +9,5 @@ namespace Retrofit.Net.Core.Models
         /// File path
         /// </summary>
         public string FilePath { get; set; }
-        /// <summary>
-        /// File name
-        /// </summary>
-        public string FileName { get; set; }
     }
 }

@@ -148,7 +148,10 @@ namespace Retrofit.Net.Core
                 {
                     foreach (var item in fields)
                     {
-                        if(item.Value?.GetType() != typeof(FieldFile))
+                        
+                        object obj = item.Value;
+                        Type type = obj.GetType();
+                        if(type != typeof(FieldFile))
                         {
                             content.Add(new StringContent(item.Value),item.Key);
                         }
@@ -156,7 +159,8 @@ namespace Retrofit.Net.Core
                         {
                             FieldFile? file = (item.Value as FieldFile);
                             string? path = file?.FilePath;
-                            content.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),item.Key, file?.FileName ?? "");
+                            string? filename = Path.GetFileName(path);
+                            content.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),item.Key, filename ?? "");
                         }
                     }
                 }

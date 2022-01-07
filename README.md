@@ -9,7 +9,7 @@
     - [Send Post request](#Send-Get-request)
     - [Send Put request](#Send-Get-request)
     - [Send Delete request](#Send-Get-request)
-    - [Uploading multiple files to server by FormData(Not implemented...)](#Uploading-multiple-files-to-server-by-FormData)
+    - [Uploading multiple files to server by FormData](#Uploading-multiple-files-to-server-by-FormData)
     - [Downloading file(Not implemented...)](#Downloading-file)
 - [Content-type](#Content-type)
 - [Retrofit.Net APIs](#Retrofit.Net-APIs)
@@ -107,14 +107,32 @@ var response = service.Update(1, new Person() { Name = "Charlie" });
 var response = service.Delete(1);
 ```
 ### Uploading multiple files to server by FormData
+SubmitEntity.cs
 ```c#
-
+public class SubmitEntity
+{
+    public string Name { get; set; }
+    public FieldFile File { get; set; }
+    // You can upload multiple files including parameters like this
+    // public FieldFile File2 { get; set; }
+    // for more File3,File4...
+}
 ```
+upload
+```c#
+var response = service.Submit(new SubmitEntity{ 
+        Name = "老中医",
+        File = new FieldFile{ FilePath = "/Users/onllyarchibald/Downloads/icon_unlocked.png" }
+    });
+Console.WriteLine(JsonConvert.SerializeObject(response));
+```
+…you can find more examples code [here]().
+
 ### Downloading file
 ```c#
 
 ```
-…you can find all examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/master/example/ExampleConsole).
+…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/master/example/ExampleConsole).
 
 ## Content-type
 ```js
@@ -255,6 +273,7 @@ you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Ne
 There is a complete example [here](xxx).
 
 ## Https certificate verification
+
 
 ## Copyright & License
 

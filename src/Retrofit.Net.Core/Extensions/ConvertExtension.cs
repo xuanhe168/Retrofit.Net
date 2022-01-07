@@ -21,7 +21,8 @@ namespace Retrofit.Net.Core.Extensions
 			{
 				string name = item.Name;
 				object? value = item.GetValue(obj, null);
-				if (item.PropertyType.IsValueType || item.PropertyType.Name.StartsWith("String"))
+				Type type = item.PropertyType;
+				if (type.IsValueType || type.Name.StartsWith("String") || type.Name.StartsWith("FieldFile"))
 				{
 					rtn.Add(new KeyValuePair<string,dynamic?>(name, value));
 				}
