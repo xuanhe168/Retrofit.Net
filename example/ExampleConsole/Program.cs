@@ -1,4 +1,6 @@
-﻿using ExampleConsole;
+﻿using System.Xml.Serialization;
+using ExampleConsole;
+using ExampleConsole.Models;
 using Newtonsoft.Json;
 using Retrofit.Net.Core;
 using Retrofit.Net.Core.Converts;
@@ -10,12 +12,16 @@ var client = new RetrofitClient.Builder()
 var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .AddBaseUrl("http://localhost:44394")
     .AddClient(client)
-    .AddConverter(new DefaultJsonConverter())
+    .AddConverter(new DefaultXmlConverter()) // The internal default is ‘DefaultJsonConverter’ if you don’t call ‘.AddConverter(new DefaultJsonConverter())’
     .Build();
 var service = retrofit.Create<IPersonService>();
 
-var response = service.GetBaiduHome();
+var response = service.GetWeather();
 Console.WriteLine(JsonConvert.SerializeObject(response));
+
+
+//var response = service.GetBaiduHome();
+//Console.WriteLine(JsonConvert.SerializeObject(response));
 
 /*Response<TokenModel> authResponse = await service.GetJwtToken(new AuthModel() { Name = "admin", Pass = "admin" });
 Console.WriteLine(JsonConvert.SerializeObject(authResponse));

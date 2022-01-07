@@ -20,7 +20,7 @@
   - [Simple interceptor](#Simple-interceptor)
   - [Advanced interceptor](#Advanced-interceptor)
     - [Resolve and reject the request](#Resolve-and-reject-the-request)
-- [Transformer(not implemented...)](#Transformer)
+- [Converter](#Converter)
 - [Set proxy and HttpClient config(not implemented...)](#set-proxy-and-httpclient-config)
 - [Https certificate verification(not implemented...)](#https-certificate-verification)
 - [Features and bugs](#features-and-bugs)
@@ -232,9 +232,20 @@ public Response<dynamic> Intercept(IChain chain)
 }
 ```
 
-## Transformer
-not implemented...
-`Transformer` allows changes to the request/response data before it is sent/received to/from the server. This is only applicable for request methods 'PUT', 'POST', and 'PATCH'. Dio has already implemented a `DefaultTransformer`, and as the default `Transformer`. If you want to customize the transformation of request/response data, you can provide a `Transformer` by your self, and replace the `DefaultTransformer` by setting the `dio.transformer`.
+## Converter
+`Converter` allows the request/response data to be changed before it is sent/received to the server. I have implemented a `DefaultXmlConverter` and `DefaultJsonConverter` as the default converter. If you want to customize the conversion of request/response data, you can define a class that inherits'IConverter' and replace `DefaultJsonConverter` by setting `.AddConverter(new YourCustomConverter())`. 
+```c#
+public class DefaultJsonConverter : IConverter
+{
+    // value:        Data returned from the server
+    // type:         The return type of the interface you declared
+    // return value: What type do you want to convert to? Here is to convert the json returned by the server /// to the interface return type you defined
+    public object? OnConvert(string value, Type type)
+    {
+        return JsonConvert.DeserializeObject(value, type);
+    }
+}
+```
 
 ## Using proxy
 There is a complete example [here](xxx).

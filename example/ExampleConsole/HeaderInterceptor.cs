@@ -14,6 +14,7 @@ public class HeaderInterceptor : IAdvancedInterceptor
         // Add token above
         Request request = chain.Request().NewBuilder()
             .AddHeader("Authorization", $"Bearer {token}")
+            .AddHeader("Accept","application/xml")
             .Build();
 
         Response<dynamic> response = chain.Proceed(request);

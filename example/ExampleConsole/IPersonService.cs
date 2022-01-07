@@ -48,5 +48,8 @@ namespace ExampleConsole
 
         [HttpGet("https://www.baidu.com/index.html")]
         Response<dynamic> GetBaiduHome();
+
+        [HttpGet("http://localhost:5062/WeatherForecast")]
+        Response<WeatherEntity> GetWeather();
     }
 }
