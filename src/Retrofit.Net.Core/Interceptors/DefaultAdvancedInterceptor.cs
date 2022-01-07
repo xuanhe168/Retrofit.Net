@@ -2,7 +2,7 @@
 
 namespace Retrofit.Net.Core.Interceptors
 {
-    public class DefaultInterceptor : IAdvancedInterceptor
+    public class DefaultAdvancedInterceptor : IAdvancedInterceptor
     {
         public Response<dynamic> Intercept(IChain chain)
         {

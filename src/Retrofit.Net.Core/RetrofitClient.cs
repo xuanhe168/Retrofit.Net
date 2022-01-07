@@ -8,9 +8,8 @@ namespace Retrofit.Net.Core
         public ISimpleInterceptor? SimpleInterceptor;
         public RetrofitClient(Builder builder)
         {
-            Interceptors = builder.Interceptor!;
+            Interceptors = builder.Interceptor ?? new DefaultAdvancedInterceptor();
             SimpleInterceptor = builder.SimpleInterceptor;
-            Interceptors = new DefaultInterceptor();
         }
         
         public class Builder

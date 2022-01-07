@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using Retrofit.Net.Core.Converts;
 
 namespace Retrofit.Net.Core
 {
@@ -6,13 +7,13 @@ namespace Retrofit.Net.Core
     {
         public string BaseUrl { get; private set; }
         public RetrofitClient Client { get; private set; }
-        public List<Converts.Converter.Factory> ConverterFactories { get; private set; }
+        public IConverter? Converter { get; private set;}
 
         public Retrofit(Builder builder)
         {
             BaseUrl = builder.BaseUrl!;
             Client = builder.Client!;
-            ConverterFactories = builder.ConverterFactories;
+            Converter = builder.Converter ?? new DefaultJsonConverter();
         }
 
         public T Create<T>()where T : class
@@ -25,8 +26,7 @@ namespace Retrofit.Net.Core
         {
             public string? BaseUrl { get; private set; }
             public RetrofitClient? Client { get; private set; }
-            public readonly List<Converts.Converter.Factory> ConverterFactories =
-                new List<Converts.Converter.Factory>();
+            public IConverter? Converter { get; private set;}
 
             public Builder AddBaseUrl(string url)
             {
@@ -40,9 +40,9 @@ namespace Retrofit.Net.Core
                 return this;
             }
 
-            public Builder AddConverterFactory(Converts.Converter.Factory factory)
+            public Builder AddConverter(IConverter converter)
             {
-                ConverterFactories.Add(factory);
+                Converter = converter;
                 return this;
             }
 

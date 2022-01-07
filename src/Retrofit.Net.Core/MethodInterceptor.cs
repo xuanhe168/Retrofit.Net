@@ -1,5 +1,4 @@
 ﻿using Castle.DynamicProxy;
-using Newtonsoft.Json;
 using Retrofit.Net.Core.Builder;
 using Retrofit.Net.Core.Models;
 
@@ -38,14 +37,13 @@ namespace Retrofit.Net.Core
                 object? bodyValue;
                 try
                 {
-                    bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
+                    bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
                 }
                 catch (Exception ex) { bodyValue = response.Body; }
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
                 response_type.GetProperty("Headers")!.SetValue(body_entity, response.Headers, null);
-
                 return Task.FromResult(body_entity! as dynamic);
             }
             else
@@ -55,9 +53,8 @@ namespace Retrofit.Net.Core
                 object? bodyValue;
                 try
                 {
-                    bodyValue = JsonConvert.DeserializeObject(response.Body, response_generic_type);
+                    bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
                 }catch (Exception ex) { bodyValue = response.Body; }
-
                 returnType.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 returnType.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 returnType.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
