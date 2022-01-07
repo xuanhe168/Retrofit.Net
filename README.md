@@ -26,7 +26,7 @@
 - [Features and bugs](#features-and-bugs)
 
 # About Retrofit.Net
-🔥🔥🔥A powerful Http client for .NET, which supports Interceptors, Global configuration, FormData, Request Cancellation, File downloading, Timeout etc. 
+🔥🔥🔥A powerful .NET Restful Http client, supports interceptor, message conversion, Get, Post, Put, Delete, file upload, file download, Proxy, Https certificate verification
 
 # Support Runtime Version
 | Target Framework  | Version |  Yes/No |
@@ -246,7 +246,7 @@ public class DefaultJsonConverter : IConverter
     }
 }
 ```
-you can find all examples code [here](https://github.com/mingyouzhu/Retrofit.Net/blob/b2eda7657283e518ae76c101cd9b8cbd1365b463/example/ExampleConsole/Program.cs).
+you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/blob/b2eda7657283e518ae76c101cd9b8cbd1365b463/example/ExampleConsole/Program.cs).
 
 ## Using proxy
 There is a complete example [here](xxx).
