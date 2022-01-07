@@ -83,7 +83,6 @@ var client = new RetrofitClient.Builder()
 var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .AddBaseUrl("https://localhost:7177")
     .AddClient(client)
-    .AddConverterFactory(GsonConverterFactory.Create())
     .Build();
 var service = retrofit.Create<IPersonService>();
 Response<TokenModel> authResponse = service.GetJwtToken(new AuthModel() { Account = "admin", Password = "admin" });
@@ -153,7 +152,7 @@ var client = new RetrofitClient.Builder()
 var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .AddBaseUrl("https://localhost:7177")  // Server address
     .AddClient(client)
-    .AddConverterFactory(GsonConverterFactory.Create()) // Message Content Converter
+    .AddConverter(new DefaultJsonConverter()) // Message Content Converter
     .Build();
 ```
 
