@@ -44,9 +44,9 @@ namespace ExampleConsole
         Response<Person> Update([FromPath] int id, [FromBody] Person person);
 
         [HttpDelete("/api/Person/{id}")]
-        Response<Person> Delete([FromPath] int id);
+        Response<Person> Delete([FromPath] int id);*/
 
         [HttpGet("https://www.baidu.com/index.html")]
-        Response<dynamic> GetBaiduHome();*/
+        Response<dynamic> GetBaiduHome();
     }
 }

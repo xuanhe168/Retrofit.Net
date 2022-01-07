@@ -4,21 +4,29 @@ namespace Retrofit.Net.Core
 {
     public class RetrofitClient
     {
-        public List<IInterceptor> Interceptors = new List<IInterceptor>();
+        public IAdvancedInterceptor Interceptors;
+        public ISimpleInterceptor? SimpleInterceptor;
         public RetrofitClient(Builder builder)
         {
-            Interceptors = builder.Interceptors!;
-            Interceptors.Add(new DefaultInterceptor());
+            Interceptors = builder.Interceptor!;
+            SimpleInterceptor = builder.SimpleInterceptor;
+            Interceptors = new DefaultInterceptor();
         }
         
         public class Builder
         {
-            public List<IInterceptor>? Interceptors = new List<IInterceptor>();
+            public IAdvancedInterceptor? Interceptor;
+            public ISimpleInterceptor? SimpleInterceptor;
 
-            public Builder AddInterceptor(IInterceptor interceptor)
+            public Builder AddInterceptor(IAdvancedInterceptor _interceptor)
             {
-                Interceptors?.Clear();
-                Interceptors?.Add(interceptor);
+                Interceptor = _interceptor;
+                return this;
+            }
+
+            public Builder AddInterceptor(ISimpleInterceptor _interceptor)
+            {
+                SimpleInterceptor = _interceptor;
                 return this;
             }
 

@@ -26,8 +26,8 @@ namespace Retrofit.Net.Core
                 .AddMethod(_method.Method)
                 .AddRequestUrl(_method.Path!)
                 .Build();
-            var interceptor = _retrofitClient.Interceptors.FirstOrDefault();
-            return interceptor!.Intercept(this);
+            var interceptor = _retrofitClient.Interceptors;
+            return interceptor.Intercept(this);
         }
 
         public Response<dynamic> Proceed(Request request)
@@ -36,23 +36,23 @@ namespace Retrofit.Net.Core
             HttpRequestMessage? requestMessage = null;
             if (request.Method == Method.GET)
             {
-                var requestUrl = GetUrlByParam(_request.RequestUrl,_method.Parameters);
+                var requestUrl = GetUrlByParam(_request.Path,_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Get,requestUrl);
             }
             else if (request.Method == Method.POST)
             {
-                requestMessage = new HttpRequestMessage(HttpMethod.Post, request.RequestUrl);
+                requestMessage = new HttpRequestMessage(HttpMethod.Post, request.Path);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage.Content = content;
             }else if (request.Method == Method.PUT)
             {
-                var requestUrl = GetUrlByParam(request.RequestUrl, _method.Parameters);
+                var requestUrl = GetUrlByParam(request.Path, _method.Parameters);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUrl);
                 requestMessage.Content = content;
             }else if (request.Method == Method.DELETE)
             {
-                var requestUrl = GetUrlByParam(request.RequestUrl, _method.Parameters);
+                var requestUrl = GetUrlByParam(request.Path, _method.Parameters);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
                 requestMessage.Content = content;
@@ -62,7 +62,7 @@ namespace Retrofit.Net.Core
             {
                 if(item.Value is not null)requestMessage?.Headers.Add(item.Key, item.Value);
             }
-            
+            _retrofitClient.SimpleInterceptor?.OnRequest(_request);
             HttpResponseMessage responseMessage = client.Send(requestMessage!);
             Response<dynamic> response = new Response<dynamic>();
             string json = JsonConvert.SerializeObject(responseMessage.Headers);
@@ -70,6 +70,7 @@ namespace Retrofit.Net.Core
             response.StatusCode = Convert.ToInt32(responseMessage.StatusCode);
             response.Body = responseMessage.Content.ReadAsStringAsync().Result;
             response.Headers = JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, object>>>(json);
+            _retrofitClient.SimpleInterceptor?.OnResponse(response);
             return response;
         }
 
