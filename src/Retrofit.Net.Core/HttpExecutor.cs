@@ -34,6 +34,8 @@ namespace Retrofit.Net.Core
         public Response<dynamic> Proceed(Request request)
         {
             HttpClient client = new HttpClient();
+            client.Timeout = _retrofitClient.Timeout ?? TimeSpan.FromSeconds(6);
+
             HttpRequestMessage? requestMessage = null;
             if (request.Method == Method.GET)
             {

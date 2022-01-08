@@ -13,7 +13,7 @@
     - [Get Response Stream](#Get-Response-Stream)
       - [Downloading file](#Downloading-file)
 - [Content-type](#Content-type)
-- [Retrofit.Net APIs](#Retrofit.Net-APIs)
+- [Retrofit.Net Configuration](#Retrofit.Net-Configuration)
 - [Request Options](#request-options)
 - [Response Schema](#response-schema)
 - [Interceptors](#interceptors)
@@ -151,9 +151,11 @@ do{
 }while(i > 0);
 outStream.Close();
 response.Body.Close();
-Console.WriteLine("File upload completed...");
+Console.WriteLine("File download completed...");
 ```
-…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/aa5d311a89b4149df1a75ec1ea65a8aeffec49fb/example/ExampleConsole).
+…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/commit/0804be858f8607e7fab404fbee2e9861430b579b).
+
+![Downloading](./Images/downloading.png)
 
 ## Content-type
 ```js
@@ -161,22 +163,21 @@ application/json    -> [FromBody]
 multipart/form-data -> [FromForm]
 ```
 
-## Retrofit.Net APIs
-
-### Creating an instance and set default configs.
-
-You can create instance of Retrofit with an optional `Retrofit.Builder` object:
-
+## Retrofit.Net Configuration
+Here you can configure 'interceptor', 'timeout', 'response' converter. like this:
 ```c#
 var client = new RetrofitClient.Builder()
-    .AddInterceptor(new HeaderInterceptor()) // Add Interceptor
+    .AddInterceptor(new HeaderInterceptor())     // Add Interceptor
+    .AddInterceptor(new SimpleInterceptorDemo()) // ...
+    .AddTimeout(TimeSpan.FromSeconds(10)) // The default wait time after making an http request is 6 seconds
     .Build();
 var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
-    .AddBaseUrl("https://localhost:7177")  // Server address
+    .AddBaseUrl("https://localhost:7283") // Base Url
     .AddClient(client)
-    .AddConverter(new DefaultJsonConverter()) // Message Content Converter
+    .AddConverter(new DefaultXmlConverter()) // The internal default is ‘DefaultJsonConverter’ if you don’t call ‘.AddConverter(new DefaultJsonConverter())’
     .Build();
 ```
+you can find more examples code [here]().
 
 ## Response Schema
 
