@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\src\Retrofit.Net.Core\Retrofit.Net.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ShellProgressBar" Version="5.1.0" />
+  </ItemGroup>
+
 </Project>
