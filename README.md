@@ -153,9 +153,8 @@ outStream.Close();
 response.Body.Close();
 Console.WriteLine("File download completed...");
 ```
-…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/commit/0804be858f8607e7fab404fbee2e9861430b579b).
-
 ![Downloading](./Images/downloading.png)
+…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/commit/0804be858f8607e7fab404fbee2e9861430b579b).
 
 ## Content-type
 ```js
