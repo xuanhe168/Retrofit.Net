@@ -64,6 +64,7 @@ namespace Retrofit.Net.Core.Builder
                 else if(attribute is HttpPostAttribute)Method = Method.POST;
                 else if(attribute is HttpPutAttribute)Method = Method.PUT;
                 else if(attribute is HttpDeleteAttribute)Method = Method.DELETE;
+                else if(attribute is HttpGetStream)Method = Method.STREAM;
             }
             else throw new NotImplementedException($"Not annotation found on method {MethodInfo.Name}");
             Debug.Assert(Path is not null);

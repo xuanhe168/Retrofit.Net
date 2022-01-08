@@ -49,10 +49,13 @@ namespace ExampleConsole
         [HttpGet("https://www.baidu.com/index.html")]
         Response<dynamic> GetBaiduHome();
 
-        [HttpGet("https://localhost:7283/WeatherForecast")]
+        [HttpGet("/WeatherForecast/GetWeatherForecast")]
         Response<WeatherEntity> GetWeather();
 
-        [HttpPost("https://localhost:7283/WeatherForecast")]
+        [HttpPost("/WeatherForecast/Submit")]
         Response<string> Submit([FromForm]SubmitEntity submit);
+
+        [HttpGetStream("/WeatherForecast/Download")]
+        Task<Response<Stream>> Download([FromQuery]string arg1);
     }
 }

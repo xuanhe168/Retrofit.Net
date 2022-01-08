@@ -2,6 +2,6 @@
 {
     public enum Method
     {
-        GET,PUT,DELETE,POST
+        GET,PUT,DELETE,POST,STREAM
     }
 }

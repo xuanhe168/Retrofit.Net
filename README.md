@@ -10,7 +10,8 @@
     - [Send Put request](#Send-Get-request)
     - [Send Delete request](#Send-Get-request)
     - [Uploading multiple files to server by FormData](#Uploading-multiple-files-to-server-by-FormData)
-    - [Downloading file(Not implemented...)](#Downloading-file)
+    - [Get Response Stream](#Get-Response-Stream)
+      - [Downloading file](#Downloading-file)
 - [Content-type](#Content-type)
 - [Retrofit.Net APIs](#Retrofit.Net-APIs)
 - [Request Options](#request-options)
@@ -127,11 +128,33 @@ Console.WriteLine(JsonConvert.SerializeObject(response));
 ```
 …you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/6036e67de00603a9189401c6a228e651be15205e/example/ExampleConsole).
 
-### Downloading file
+### Get Response Stream
+Define your api:
 ```c#
-
+[HttpGetStream("/WeatherForecast/Download")]
+Task<Response<Stream>> Download([FromQuery]string arg1);
 ```
-…you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/tree/master/example/ExampleConsole).
+Example:
+```c#
+Response<Stream> response = await service.Download("test");
+```
+
+### Downloading file
+After getting the http reactive stream, you can store it,like this:
+```c#
+Response<Stream> response = await service.Download("test");
+Stream outStream = File.Create("/Users/onllyarchibald/Desktop/a.zip");
+byte[] buffer = new byte[1024];
+int i;
+do{
+    i = response.Body!.Read(buffer,0,buffer.Length);
+    if(i > 0)outStream.Write(buffer,0,i);
+}while(i > 0);
+outStream.Close();
+response.Body.Close();
+Console.WriteLine("File upload completed...");
+```
+…you can find more examples code [here]().
 
 ## Content-type
 ```js
@@ -260,12 +283,18 @@ public class DefaultJsonConverter : IConverter
     // value:        Data returned from the server
     // type:         The return type of the interface you declared
     // return value: What type do you want to convert to? Here is to convert the json returned by the server /// to the interface return type you defined
-    public object? OnConvert(string value, Type type)
+    public object? OnConvert(string from, Type to)
     {
-        return JsonConvert.DeserializeObject(value, type);
+        if(from is null)return from;
+        if (to == typeof(Stream))return from;
+        if (to?.Namespace?.StartsWith("System") is not true)
+        {
+            return JsonConvert.DeserializeObject(from.ToString() ?? "",to!);
+        }
+        return from;
     }
 }
-```
+````
 you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/blob/b2eda7657283e518ae76c101cd9b8cbd1365b463/example/ExampleConsole/Program.cs).
 
 ## Using proxy
@@ -285,7 +314,6 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 [tracker]: https://github.com/mingyouzhu/Retrofit.Net/issues
 
 ## Donate
-
 Buy a cup of coffee for me (Scan by wechat)：
 ![Contact-w100](./Images/me.jpg)
 ![PAY-w100](./Images/pay.jpg)

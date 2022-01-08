@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Retrofit.Net.Core.Builder;
@@ -56,8 +57,11 @@ namespace Retrofit.Net.Core
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
                 requestMessage.Content = content;
+            }else if(request.Method == Method.STREAM)
+            {
+                var requestUrl = GetUrlByParam(_request.Path,_method.Parameters);
+                requestMessage = new HttpRequestMessage(HttpMethod.Get,requestUrl);
             }
-            
             foreach (var item in request.Headers)
             {
                 if(item.Value is not null)requestMessage?.Headers.Add(item.Key, item.Value);
@@ -68,7 +72,8 @@ namespace Retrofit.Net.Core
             string json = JsonConvert.SerializeObject(responseMessage.Headers);
             response.Message = responseMessage.ReasonPhrase;
             response.StatusCode = Convert.ToInt32(responseMessage.StatusCode);
-            response.Body = responseMessage.Content.ReadAsStringAsync().Result;
+            if(request.Method == Method.STREAM)response.Body = responseMessage.Content.ReadAsStream();
+            else response.Body = responseMessage.Content.ReadAsStringAsync().Result;
             response.Headers = JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, object>>>(json);
             _retrofitClient.SimpleInterceptor?.OnResponse(response);
             return response;
@@ -86,8 +91,9 @@ namespace Retrofit.Net.Core
                 {
                     if(baseUrl.Contains('?') is false)baseUrl += "?";
 
-                    Type valueType = param.GetType();
-                    if (valueType.IsClass)
+                    Type? valueType = param.Value?.GetType();
+                    var name = valueType?.Namespace;
+                    if(name?.StartsWith("System") == false)
                     {
                         IList<KeyValuePair<string, dynamic>>? fields = ConvertExtensions.GetProperties(param.Value);
                         foreach(var item in fields)
@@ -116,7 +122,7 @@ namespace Retrofit.Net.Core
             Param first = collection.First();
             Type valueType = first.GetType();
             IList<KeyValuePair<string, dynamic>>? fields = null;
-            if(valueType.IsClass)fields = ConvertExtensions.GetProperties(first.Value);
+            if(valueType?.Namespace?.StartsWith("System") is not true)fields = ConvertExtensions.GetProperties(first.Value);
             if(first.Kind == ParamKind.Body)
             {
                 JObject obj = new JObject();
@@ -160,6 +166,7 @@ namespace Retrofit.Net.Core
                             FieldFile? file = (item.Value as FieldFile);
                             string? path = file?.FilePath;
                             string? filename = Path.GetFileName(path);
+                            if(System.IO.File.Exists(path ?? "") is not true)throw new FileNotFoundException($"the file '{path}' must can not be null!");
                             content.Add(new ByteArrayContent(File.ReadAllBytes(path ?? "")),item.Key, filename ?? "");
                         }
                     }

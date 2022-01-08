@@ -34,12 +34,7 @@ namespace Retrofit.Net.Core
                 Type? response_type = returnTypes[0];
                 object? body_entity = Activator.CreateInstance(response_type);
                 Type response_generic_type = response_type.GenericTypeArguments[0];
-                object? bodyValue;
-                try
-                {
-                    bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
-                }
-                catch (Exception ex) { bodyValue = response.Body; }
+                object? bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
                 response_type.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 response_type.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 response_type.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
@@ -50,11 +45,7 @@ namespace Retrofit.Net.Core
             {
                 object? body_entity = Activator.CreateInstance(returnType!);
                 Type response_generic_type = returnType!.GenericTypeArguments[0];
-                object? bodyValue;
-                try
-                {
-                    bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
-                }catch (Exception ex) { bodyValue = response.Body; }
+                object? bodyValue = _retrofit.Converter?.OnConvert(response.Body,response_generic_type);
                 returnType.GetProperty("Body")!.SetValue(body_entity, bodyValue, null);
                 returnType.GetProperty("Message")!.SetValue(body_entity, response.Message, null);
                 returnType.GetProperty("StatusCode")!.SetValue(body_entity, response.StatusCode, null);
