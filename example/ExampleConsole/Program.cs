@@ -17,7 +17,9 @@ var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .Build();
 var service = retrofit.Create<IPersonService>();
 
-Response<Stream> response = await service.Download("test");
+
+
+/*Response<Stream> response = await service.Download("test");
 Stream outStream = File.Create("/Users/onllyarchibald/Desktop/a.zip");
 byte[] buffer = new byte[1024];
 int i;
@@ -27,7 +29,7 @@ do{
 }while(i > 0);
 outStream.Close();
 response.Body.Close();
-Console.WriteLine("File upload completed...");
+Console.WriteLine("File upload completed...");*/
 
 // HttpClient client1 = new HttpClient();
 // Stream inStream = await client1.GetStreamAsync("https://localhost:7283/WeatherForecast");
@@ -42,7 +44,7 @@ Console.WriteLine("File upload completed...");
 // inStream.Close();
 // Console.WriteLine($"i = {i}");
 
-var response1 = service.Submit(new SubmitEntity{ 
+/*var response1 = service.Submit(new SubmitEntity{ 
         Name = "老中医",
         File = new FieldFile{ FilePath = "/Users/onllyarchibald/Library/Mobile Documents/iCloud~com~apple~iBooks/Documents/大卫X方法 - 大卫X.pdf" }
     });

@@ -21,7 +21,6 @@
   - [Advanced interceptor](#Advanced-interceptor)
     - [Resolve and reject the request](#Resolve-and-reject-the-request)
 - [Converter](#Converter)
-- [Set proxy and HttpClient config(not implemented...)](#set-proxy-and-httpclient-config)
 - [Https certificate verification(not implemented...)](#https-certificate-verification)
 - [Features and bugs](#features-and-bugs)
 
@@ -296,9 +295,6 @@ public class DefaultJsonConverter : IConverter
 }
 ````
 you can find more examples code [here](https://github.com/mingyouzhu/Retrofit.Net/blob/b2eda7657283e518ae76c101cd9b8cbd1365b463/example/ExampleConsole/Program.cs).
-
-## Using proxy
-There is a complete example [here](xxx).
 
 ## Https certificate verification
 
