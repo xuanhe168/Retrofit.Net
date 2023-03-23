@@ -106,6 +106,8 @@ namespace Retrofit.Net.Core
                     }
                     else
                     {
+                        if (i == 0 && baseUrl.Contains("&")) baseUrl += "&";
+
                         baseUrl += $"{param.Name}={param.Value}";
                         if (i < (_params!.Count - 1)) baseUrl += "&";
                     }
