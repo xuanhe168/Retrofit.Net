@@ -57,5 +57,8 @@ namespace ExampleConsole
 
         [HttpGetStream("/WeatherForecast/Download")]
         Task<Response<Stream>> Download([FromQuery]string arg1);
+
+        [HttpGet("https://localhost:7225/api/pets/{ownerid}/{color}")]
+        Task<Response<string>> FindPets([FromPath]int ownerid,[FromPath] string color);
     }
 }

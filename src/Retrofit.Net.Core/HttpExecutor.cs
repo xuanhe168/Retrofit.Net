@@ -85,13 +85,18 @@ namespace Retrofit.Net.Core
 
         string GetUrlByParam(string baseUrl,IList<Param>? _params)
         {
-            if (baseUrl.Contains("{"))baseUrl = baseUrl[0..baseUrl.LastIndexOf("{")];
-            for (int i = 0; i < _params?.Count; i++)
+            string finalUrl = baseUrl.Clone() as string ?? "";
+            for(int i = 0; i < _params?.Count; i++)
             {
                 Param param = _params[i];
-                if (param.Kind == ParamKind.Query)
+
+                if (param.Kind == ParamKind.Path)
                 {
-                    if(baseUrl.Contains('?') is false)baseUrl += "?";
+                    finalUrl = finalUrl.Replace(param.Name,$"{param.Value}");
+                }
+                else if (param.Kind == ParamKind.Query)
+                {
+                    if(finalUrl.Contains('?') is false) finalUrl += "?";
 
                     Type? valueType = param.Value?.GetType();
                     var name = valueType?.Namespace;
@@ -100,21 +105,22 @@ namespace Retrofit.Net.Core
                         IList<KeyValuePair<string, dynamic>>? fields = ConvertExtensions.GetProperties(param.Value);
                         foreach(var item in fields)
                         {
-                            baseUrl += $"{item.Key}={item.Value}";
-                            if(fields.IndexOf(item) < fields.Count - 1)baseUrl += "&";
+                            finalUrl += $"{item.Key}={item.Value}";
+                            if(fields.IndexOf(item) < fields.Count - 1) finalUrl += "&";
                         }
                     }
                     else
                     {
-                        if (i == 0 && baseUrl.Contains("&")) baseUrl += "&";
+                        if (i == 0 && finalUrl.Contains("&")) finalUrl += "&";
 
-                        baseUrl += $"{param.Name}={param.Value}";
-                        if (i < (_params!.Count - 1)) baseUrl += "&";
+                        finalUrl += $"{param.Name}={param.Value}";
+                        if (i < (_params!.Count - 1)) finalUrl += "&";
                     }
                 }
-                else if(param.Kind == ParamKind.Path)baseUrl += param.Value;
             }
-            return baseUrl;
+            finalUrl = finalUrl.Replace("{", "");
+            finalUrl = finalUrl.Replace("}", "");
+            return finalUrl;
         }
 
         HttpContent? GetParams(IList<Param>? _params)

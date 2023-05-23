@@ -19,7 +19,7 @@ var retrofit = new Retrofit.Net.Core.Retrofit.Builder()
     .Build();
 var service = retrofit.Create<IPersonService>();
 
-Response<Stream> response = await service.Download("test");
+/*Response<Stream> response = await service.Download("test");
 Stream outStream = File.Create("/Users/onllyarchibald/Desktop/a.zip");
 
 var options = new ProgressBarOptions
@@ -44,7 +44,7 @@ do
 } while (i > 0);
 outStream.Close();
 response.Body.Close();
-Console.WriteLine("\nFile download completed...");
+Console.WriteLine("\nFile download completed...");*/
 
 // HttpClient client1 = new HttpClient();
 // Stream inStream = await client1.GetStreamAsync("https://localhost:7283/WeatherForecast");
@@ -77,3 +77,9 @@ File.WriteAllText("token.txt",authResponse.Body?.Token);
 
 Response<ResponsePage<GameEntity>> response = await service.GetGames(new RequestPage(pageNo:1,pageSize:10));
 Console.WriteLine(JsonConvert.SerializeObject(response));*/
+
+
+// fix #3
+var result = await service.FindPets(121,"BlackWhite");
+Console.WriteLine(result.Body);
+Console.ReadKey();
