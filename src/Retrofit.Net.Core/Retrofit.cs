@@ -5,11 +5,11 @@ namespace Retrofit.Net.Core
 {
     public class Retrofit
     {
-        public string BaseUrl { get; private set; }
-        public RetrofitClient Client { get; private set; }
-        public IConverter? Converter { get; private set;}
+        internal string BaseUrl { get; private set; }
+        internal RetrofitClient Client { get; private set; }
+        internal IConverter? Converter { get; private set;}
 
-        public Retrofit(Builder builder)
+        internal Retrofit(Builder builder)
         {
             BaseUrl = builder.BaseUrl!;
             Client = builder.Client!;
