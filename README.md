@@ -30,6 +30,10 @@
 # Support Runtime Version
 | Target Framework  | Version |  Yes/No |
 | --------          | -----:  | :----:  |
+| .NET              | 10.x     |   Yes   |
+| .NET              | 9.x     |   Yes   |
+| .NET              | 8.x     |   Yes   |
+| .NET              | 7.x     |   Yes   |
 | .NET              | 6.x     |   Yes   |
 | .NET              | 5.x     |   No   |
 | .NET Core         | 3.x     |   No   |
