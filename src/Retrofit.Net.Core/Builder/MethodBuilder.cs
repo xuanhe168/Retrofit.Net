@@ -44,10 +44,10 @@ namespace Retrofit.Net.Core.Builder
 
         public MethodBuilder Build()
         {
-            if (BaseUrl is null) throw new NullReferenceException($"Property cannot be null of {nameof(BaseUrl)}");
-            if (MethodInfo is null) throw new NullReferenceException($"Property cannot be null of {nameof(MethodInfo)}");
-            if (Arguments is null) throw new NullReferenceException($"Property cannot be null of {nameof(Arguments)}");
-            if (ReturnType is null) throw new NullReferenceException($"Property cannot be null of {nameof(ReturnType)}");
+            BaseUrl = BaseUrl ?? throw new NullReferenceException($"Property cannot be null of {nameof(BaseUrl)}");
+            MethodInfo = MethodInfo ?? throw new NullReferenceException($"Property cannot be null of {nameof(MethodInfo)}");
+            Arguments = Arguments ?? throw new NullReferenceException($"Property cannot be null of {nameof(Arguments)}");
+            ReturnType = ReturnType ?? throw new NullReferenceException($"Property cannot be null of {nameof(ReturnType)}");
             ParseMethodAttributes();
             ParseParameters();
             return this;
@@ -57,16 +57,17 @@ namespace Retrofit.Net.Core.Builder
         {
             BaseMethodAttribute? attribute = MethodInfo.GetCustomAttributes(true)
                 .FirstOrDefault() as BaseMethodAttribute;
-            if (attribute is not null)
+            attribute = attribute ?? throw new NotImplementedException($"Not annotation found on method {MethodInfo.Name}");
+            Path = attribute.Path.Contains("http") != true ? $"{BaseUrl}{attribute!.Path}" : attribute.Path;
+            Method = attribute switch
             {
-                Path = attribute.Path.Contains("http") != true ? $"{BaseUrl}{attribute!.Path}" : attribute.Path;
-                if(attribute is HttpGetAttribute)Method = Method.GET;
-                else if(attribute is HttpPostAttribute)Method = Method.POST;
-                else if(attribute is HttpPutAttribute)Method = Method.PUT;
-                else if(attribute is HttpDeleteAttribute)Method = Method.DELETE;
-                else if(attribute is HttpGetStream)Method = Method.STREAM;
-            }
-            else throw new NotImplementedException($"Not annotation found on method {MethodInfo.Name}");
+                HttpGetAttribute => Method.GET,
+                HttpPostAttribute => Method.POST,
+                HttpPutAttribute => Method.PUT,
+                HttpDeleteAttribute => Method.DELETE,
+                HttpGetStream => Method.STREAM,
+                _ => throw new NotSupportedException($"HTTP requests of type '{attribute.GetType().Name}' are not currently supported.")
+            };
             Debug.Assert(Path is not null);
         }
 
@@ -79,11 +80,16 @@ namespace Retrofit.Net.Core.Builder
                 ParameterInfo param = ParamInfos[i];
                 object value = Arguments[i];
                 BaseParamAttribute? attribute = param.GetCustomAttributes(false).FirstOrDefault() as BaseParamAttribute;
-                if (attribute is null) throw new ArgumentException($"No annotation found on parameter ${param.Name} of ${MethodInfo.Name}");
-                if (attribute is FromPathAttribute) Parameters!.Add(new Param(kind:ParamKind.Path,name:attribute.Name ?? param.Name ?? "",type:ParamType.Text,value:value));
-                if (attribute is FromQueryAttribute) Parameters!.Add(new Param(kind:ParamKind.Query,name:attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value));
-                if (attribute is FromFormAttribute) Parameters!.Add(new Param(kind:ParamKind.Form,name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value));
-                if (attribute is FromBodyAttribute) Parameters!.Add(new Param(kind: ParamKind.Body, name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value));
+                attribute = attribute ?? throw new ArgumentException($"No annotation found on parameter ${param.Name} of ${MethodInfo.Name}");
+                Param pm = attribute switch
+                {
+                    FromPathAttribute => new Param(kind: ParamKind.Path, name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value),
+                    FromQueryAttribute => new Param(kind: ParamKind.Query, name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value),
+                    FromFormAttribute => new Param(kind: ParamKind.Form, name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value),
+                    FromBodyAttribute => new Param(kind: ParamKind.Body, name: attribute.Name ?? param.Name ?? "", type: ParamType.Text, value: value),
+                    _ => throw new NotSupportedException($"The annotation of {attribute.GetType().Name} is not supported at the moment")
+                };
+                Parameters.Add(pm);
             }
         }
     }

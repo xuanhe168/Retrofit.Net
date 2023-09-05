@@ -5,9 +5,7 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retrofit.Net.Core", "src\Retrofit.Net.Core\Retrofit.Net.Core.csproj", "{7182FB8C-D500-416B-985C-68952E04948D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleConsole", "example\ExampleConsole\ExampleConsole.csproj", "{EEF78E96-572B-43DF-A5C3-8C9FDF8D1BD2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retrofit.Net.Core.Test", "test\Retrofit.Net.Core.Test\Retrofit.Net.Core.Test.csproj", "{BEC3243C-D58E-413C-A3A6-D4DC54239F06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retrofit.Net.Core.Test", "test\Retrofit.Net.Core.Test\Retrofit.Net.Core.Test.csproj", "{BEC3243C-D58E-413C-A3A6-D4DC54239F06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{7182FB8C-D500-416B-985C-68952E04948D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7182FB8C-D500-416B-985C-68952E04948D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7182FB8C-D500-416B-985C-68952E04948D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EEF78E96-572B-43DF-A5C3-8C9FDF8D1BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEF78E96-572B-43DF-A5C3-8C9FDF8D1BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEF78E96-572B-43DF-A5C3-8C9FDF8D1BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEF78E96-572B-43DF-A5C3-8C9FDF8D1BD2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BEC3243C-D58E-413C-A3A6-D4DC54239F06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BEC3243C-D58E-413C-A3A6-D4DC54239F06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEC3243C-D58E-413C-A3A6-D4DC54239F06}.Release|Any CPU.ActiveCfg = Release|Any CPU
