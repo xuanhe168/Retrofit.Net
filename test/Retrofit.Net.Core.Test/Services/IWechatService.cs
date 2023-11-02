@@ -28,5 +28,5 @@ public interface IWechatService
     /// <param name="param"></param>
     /// <returns></returns>
     [HttpPost("https://api.weixin.qq.com/wxa/generatescheme")]
-    Task<GetMiniSchemeCodeOutParam> GetMiniSchemeCode([FromQuery]string access_token,[FromBody]GetMiniSchemeCodeInParam param);
+    Task<Response<dynamic>> GetMiniSchemeCode([FromQuery]string access_token,[FromBody]GetMiniSchemeCodeInParam param);
 }

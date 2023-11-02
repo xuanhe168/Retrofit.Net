@@ -44,7 +44,8 @@ namespace Retrofit.Net.Core
             }
             else if (request.Method == Method.POST)
             {
-                requestMessage = new HttpRequestMessage(HttpMethod.Post, request.Path);
+                var requestUrl = GetUrlByParam(request.Path, _method.Parameters);
+                requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUrl);
                 HttpContent? content = GetParams(_method.Parameters);
                 requestMessage.Content = content;
             }else if (request.Method == Method.PUT)
@@ -135,25 +136,8 @@ namespace Retrofit.Net.Core
             if(valueType?.Namespace?.StartsWith("System") is not true)fields = ConvertExtensions.GetProperties(first.Value);
             if(first.Kind == ParamKind.Body)
             {
-                JObject obj = new JObject();
-                if(fields is not null)
-                {
-                    foreach (var item in fields)
-                    {
-                        obj.Add(item.Key, item.Value);
-                    }
-                }
-                else
-                {
-                    obj.Add(first.Name, first.Value);
-                }
-                if(collection.Count > 1)
-                {
-                    foreach(var item in collection.Skip(1))
-                    {
-                        obj.Add(item.Name, item.Value);
-                    }
-                }
+                var json = JsonConvert.SerializeObject(first.Value);
+                JObject obj = JObject.Parse(json);
                 response = new StringContent(obj.ToString());
                 response.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             }

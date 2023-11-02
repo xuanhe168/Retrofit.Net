@@ -1,10 +1,13 @@
-﻿namespace Retrofit.Net.Core.Test.Models;
+﻿using Retrofit.Net.Core.Attributes.Parameters;
+
+namespace Retrofit.Net.Core.Test.Models;
 
 public class GetMiniSchemeCodeInParam
 {
     /// <summary>
     /// 跳转到的目标小程序信息。
     /// </summary>
+    [FromBody]
     public GetMiniSchemeCodeInParamJumpWxa jump_wxa { get; set; }
 
     /// <summary>
