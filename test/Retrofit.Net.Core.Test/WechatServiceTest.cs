@@ -26,7 +26,7 @@ public class WechatServiceTest
     public async void GetAccessToken()
     {
         var service = _retrofit!.Create<IWechatService>();
-        var s = await service.GetMiniAccessToken("wx8c5bb9b8c1475e6f", "25b1b582857bf746b4bf3e82de427a7d");
+        var s = await service.GetMiniAccessToken("", "");
 
         var a = 10;
     }

@@ -17,7 +17,7 @@ public interface IWechatService
     /// <param name="appId">小程序唯一凭证，即 AppID</param>
     /// <param name="secret">小程序唯一凭证密钥，即 AppSecret，获取方式同 appid</param>
     /// <returns></returns>
-    [HttpGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential")]
+    [HttpGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&")]
     Task<Response<dynamic>> GetMiniAccessToken([FromQuery]string appId,[FromQuery]string secret);
 
     /// <summary>
