@@ -311,8 +311,3 @@ This open source project authorized by https://github.com, and the license is MI
 Please file feature requests and bugs at the [issue tracker][tracker].
 
 [tracker]: https://github.com/mingyouzhu/Retrofit.Net/issues
-
-## Donate
-Buy a cup of coffee for me (Scan by wechat)：
-![Contact-w100](./Images/me.jpg)
-![PAY-w100](./Images/pay.jpg)
