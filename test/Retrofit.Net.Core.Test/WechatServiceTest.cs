@@ -40,6 +40,27 @@ public class WechatServiceTest
             }
         });
         var a = 10;
+    }
 
+    [Fact]
+    public async void GetAccessToken2()
+    {
+        var service = _retrofit!.Create<IWechatService>();
+        var schemeInfo = await service.GetMiniSchemeCode2("123",new GetMiniSchemeCodeInParam
+        {
+            jump_wxa = new GetMiniSchemeCodeInParamJumpWxa
+            {
+                path = "pages/index/index",
+                query = "",
+            },
+            List = new List<GetMiniSchemeCodeInParamJumpWxa>
+            {
+                new GetMiniSchemeCodeInParamJumpWxa
+                {
+
+                }
+            }
+        });
+        var a = 10;
     }
 }

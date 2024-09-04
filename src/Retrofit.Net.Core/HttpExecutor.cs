@@ -132,8 +132,6 @@ namespace Retrofit.Net.Core
             if(collection.Count < 1)return null;
             Param first = collection.First();
             Type valueType = first.GetType();
-            IList<KeyValuePair<string, dynamic>>? fields = null;
-            if(valueType?.Namespace?.StartsWith("System") is not true)fields = ConvertExtensions.GetProperties(first.Value);
             if(first.Kind == ParamKind.Body)
             {
                 var json = JsonConvert.SerializeObject(first.Value);
@@ -143,6 +141,8 @@ namespace Retrofit.Net.Core
             }
             else if(first.Kind == ParamKind.Form)
             {
+                IList<KeyValuePair<string, dynamic>>? fields = null;
+                if(valueType?.Namespace?.StartsWith("System") is not true)fields = ConvertExtensions.GetProperties(first.Value);
                 MultipartFormDataContent content = new MultipartFormDataContent();
                 if(fields is not null)
                 {

@@ -7,7 +7,6 @@ public class GetMiniSchemeCodeInParam
     /// <summary>
     /// 跳转到的目标小程序信息。
     /// </summary>
-    [FromBody]
     public GetMiniSchemeCodeInParamJumpWxa jump_wxa { get; set; }
 
     /// <summary>
@@ -26,6 +25,9 @@ public class GetMiniSchemeCodeInParam
     /// 最长间隔天数为30天。is_expire 为 true 且 expire_type 为 1 时必填
     /// </summary>
     public int? expire_interval { get; set; }
+
+    [FromBody]
+    public IList<GetMiniSchemeCodeInParamJumpWxa> List { get; set; }
 }
 
 public class GetMiniSchemeCodeInParamJumpWxa

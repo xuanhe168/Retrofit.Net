@@ -19,10 +19,12 @@ namespace Retrofit.Net.Core.Extensions
 			if (properties.Length <= 0) return rtn;
 			foreach (PropertyInfo item in properties)
 			{
-				string name = item.Name;
-				object? value = item.GetValue(obj, null);
 				Type type = item.PropertyType;
-				if (type.IsValueType || type.Name.StartsWith("String") || type.Name.StartsWith("FieldFile"))
+
+                string name = item.Name;
+                object? value = item.GetValue(obj, null);
+
+                if (type.IsValueType || type.Name.StartsWith("String") || type.Name.StartsWith("FieldFile"))
 				{
 					rtn.Add(new KeyValuePair<string,dynamic?>(name, value));
 				}
